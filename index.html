@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ElHelewa — Image & Video Hosting</title>
+<meta name="description" content="Upload images and videos and get permanent direct links, stored on Google Drive.">
+<link rel="icon" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#443a78;--mid:#7c5fbd;--soft:#e2b0ef;--pale:#ffe3ff;--ink:#241d45;--mute:#6b6590;--line:#e6d3f0;--ok:#16805f;--err:#c2362f}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--pale);line-height:1.6}
+h1,h2,.brand{font-family:Sora,Inter,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+/* header + hero */
+.top{background:var(--deep);color:#fff;padding-bottom:120px}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;color:#fff;text-decoration:none}
+.brand img{width:44px;height:44px;border-radius:12px;background:#d9dadf}
+nav .pill{font-size:13px;color:var(--soft);border:1px solid rgba(226,176,239,.35);border-radius:99px;padding:5px 14px}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center;padding-top:36px}
+.hero h1{font-size:clamp(34px,5.4vw,56px);line-height:1.08;margin:0 0 16px;font-weight:800;letter-spacing:-.02em}
+.hero p{color:#e9dcf5;font-size:18px;max-width:46ch;margin:0 0 24px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chips span{background:rgba(255,227,255,.1);border:1px solid rgba(226,176,239,.3);padding:7px 14px;border-radius:99px;font-size:14px}
+.logo{width:100%;max-width:330px;justify-self:center;border-radius:28px;box-shadow:0 24px 60px rgba(20,10,50,.5);transform:rotate(2deg)}
+
+/* uploader card */
+.card{background:#fff;border-radius:24px;padding:28px;margin-top:-84px;box-shadow:0 20px 50px rgba(68,58,120,.18);position:relative}
+#drop{display:block;border:2px dashed var(--soft);background:var(--pale);border-radius:18px;padding:52px 20px;text-align:center;cursor:pointer;transition:background .15s,border-color .15s}
+#drop:hover,#drop.over{border-color:var(--mid);background:#f6d7fb}
+#drop:focus-within{outline:3px solid var(--mid);outline-offset:3px}
+#drop b{font-family:Sora;font-size:21px;display:block;color:var(--deep)}
+#drop span{color:var(--mute);font-size:14px}
+#drop .ico{width:54px;height:54px;border-radius:16px;background:var(--deep);color:#fff;display:grid;place-items:center;margin:0 auto 14px;font-size:26px}
+input[type=file]{position:absolute;opacity:0;pointer-events:none}
+.tools{display:flex;justify-content:space-between;align-items:center;margin-top:16px;color:var(--mute);font-size:14px;flex-wrap:wrap;gap:8px}
+.item{border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:14px;display:grid;grid-template-columns:76px 1fr;gap:14px}
+.thumb{width:76px;height:76px;border-radius:12px;background:var(--pale) center/cover;overflow:hidden}
+.thumb video{width:100%;height:100%;object-fit:cover}
+.name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{color:var(--mute);font-size:13px}
+.bar{height:6px;background:var(--pale);border-radius:9px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mid),var(--deep));transition:width .2s}
+.err{color:var(--err);font-size:14px;margin-top:6px}.ok{color:var(--ok);font-weight:600}
+.links{margin-top:12px;display:grid;gap:8px}
+.row{display:flex;gap:8px;align-items:center}
+.row label{width:78px;font-size:13px;color:var(--mute);flex:none}
+.row input{flex:1;min-width:0;font:13px ui-monospace,Menlo,monospace;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:#fcf6fd;color:var(--ink)}
+button{font:600 13px Inter;padding:8px 16px;border-radius:10px;border:0;background:var(--deep);color:#fff;cursor:pointer;transition:background .15s}
+button:hover{background:var(--mid)}
+button.ghost{background:var(--pale);color:var(--deep);border:1px solid var(--soft)}
+button.ghost:hover{background:var(--soft)}
+button:focus-visible{outline:3px solid var(--mid);outline-offset:2px}
+
+/* features + footer */
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:56px 0}
+.feat div{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px}
+.feat h2{font-size:17px;margin:0 0 6px;color:var(--deep)}
+.feat p{margin:0;color:var(--mute);font-size:14.5px}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--mute);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+/* lock screen */
+#lock{position:fixed;inset:0;background:var(--deep);display:grid;place-items:center;z-index:10;padding:20px}
+#lock form{background:#fff;border-radius:24px;padding:34px;width:100%;max-width:380px;text-align:center}
+#lock img{width:96px;border-radius:22px;margin-bottom:14px}
+#lock h2{margin:0 0 4px;font-size:22px;color:var(--deep)}
+#lock p{margin:0 0 18px;color:var(--mute);font-size:14.5px}
+#lock input{width:100%;padding:13px 14px;border:1px solid var(--soft);border-radius:12px;font-size:16px;text-align:center;margin-bottom:12px;background:var(--pale)}
+#lock input:focus{outline:3px solid var(--mid);outline-offset:1px}
+#lock button{width:100%;padding:13px;font-size:15px}
+#lockErr{color:var(--err);font-size:14px;min-height:22px;margin-top:8px}
+.hidden{display:none!important}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.logo{max-width:220px;order:-1;justify-self:start}.top{padding-bottom:110px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <form id="lockForm">
+    <img src="logo.png" alt="ElHelewa logo">
+    <h2>Welcome to ElHelewa</h2>
+    <p>Enter the password to start uploading.</p>
+    <input type="password" id="pw" placeholder="Password" autocomplete="current-password" required>
+    <button type="submit" id="lockBtn">Unlock</button>
+    <div id="lockErr" role="alert"></div>
+  </form>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#"><img src="logo.png" alt="">ElHelewa</a>
+      <span class="pill">Image &amp; video hosting</span>
+    </nav>
+    <div class="hero">
+      <div>
+        <h1>Upload once.<br>Link forever.</h1>
+        <p>Drop in your images and videos and get direct links you can use in code, posts, or anywhere else. Files never expire.</p>
+        <div class="chips"><span>Permanent links</span><span>Up to 100 MB</span><span>Images &amp; video</span><span>Stored on Google Drive</span></div>
+      </div>
+      <img class="logo" src="logo.png" alt="Yasser ElHelewa logo">
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card" id="upload">
+    <label id="drop" tabindex="0">
+      <input type="file" id="file" accept="image/*,video/*" multiple>
+      <div class="ico" aria-hidden="true">↑</div>
+      <b>Drop files here or click to browse</b>
+      <span>You can also paste an image with Ctrl+V</span>
+    </label>
+    <div class="tools"><span>Max file size: 100 MB</span><button id="copyAll" class="ghost" hidden>Copy all direct links</button></div>
+    <div id="list"></div>
+  </section>
+
+  <section class="feat">
+    <div><h2>Direct links</h2><p>Use the link in &lt;img&gt; tags, apps, APIs, forums, or chat.</p></div>
+    <div><h2>Large uploads, no stress</h2><p>Big files are sent in chunks and retried automatically if the connection drops.</p></div>
+    <div><h2>Always available</h2><p>Everything lives in Drive, so your links keep working with no expiry date.</p></div>
+  </section>
+
+  <footer><span>© <span id="yr"></span> Yasser ElHelewa</span><span>ElHelewa — image hosting</span></footer>
+</main>
+
+<script>
+// ===== Settings =====
+const API_URL  = 'https://script.google.com/macros/s/AKfycbzEMCLRJoH4mTW3dn8EXfyXu7zwvnrYppB3H7cZQa9QrXYz-5MlBjLzELMYhqEYOKC57A/exec';   // Apps Script Web App URL
+const MAX_MB   = 100;
+const CHUNK    = 8 * 1024 * 1024;                  // must be a multiple of 256 KB
+// ====================
+
+const $ = s => document.querySelector(s), list = $('#list'), done = [];
+let KEY = sessionStorage.getItem('eh_key') || '';
+$('#yr').textContent = new Date().getFullYear();
+
+const call = async body => {
+  const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({...body, key:KEY}) });
+  return r.json();
+};
+const fmt = b => b > 1048576 ? (b/1048576).toFixed(1)+' MB' : Math.max(1,Math.round(b/1024))+' KB';
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+/* ---- lock screen ---- */
+async function tryUnlock(pw, silent){
+  const btn = $('#lockBtn'); btn.disabled = true; btn.textContent = 'Checking...';
+  KEY = pw;
+  try{
+    const r = await call({ action:'auth' });
+    if(r.ok){ sessionStorage.setItem('eh_key', pw); $('#lock').classList.add('hidden'); return; }
+    KEY = ''; sessionStorage.removeItem('eh_key');
+    if(!silent) $('#lockErr').textContent = 'Wrong password. Try again.';
+  }catch(e){ if(!silent) $('#lockErr').textContent = 'Could not reach the server. Check API_URL.'; }
+  btn.disabled = false; btn.textContent = 'Unlock';
+}
+$('#lockForm').addEventListener('submit', e => { e.preventDefault(); $('#lockErr').textContent=''; tryUnlock($('#pw').value.trim()); });
+if(KEY) tryUnlock(KEY, true);
+
+/* ---- drop / paste ---- */
+const drop = $('#drop');
+['dragover','dragenter'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => handle(e.dataTransfer.files));
+$('#file').addEventListener('change', e => { handle(e.target.files); e.target.value = ''; });
+document.addEventListener('paste', e => handle([...e.clipboardData.files]));
+$('#copyAll').onclick = () => navigator.clipboard.writeText(done.join('\n'));
+const handle = files => [...files].forEach(upload);
+
+/* ---- chunked upload to the Drive resumable session ---- */
+function putChunk(session, blob, start, total, onProgress){
+  return new Promise((ok, no) => {
+    const x = new XMLHttpRequest();
+    x.open('PUT', session);
+    x.setRequestHeader('Content-Range', `bytes ${start}-${start+blob.size-1}/${total}`);
+    x.upload.onprogress = e => onProgress(start + e.loaded);
+    x.onload = () => {
+      if(x.status === 308) return ok(null);                       // chunk accepted, more to come
+      if(x.status === 200 || x.status === 201) return ok(JSON.parse(x.responseText));
+      no(new Error('Upload error ' + x.status));
+    };
+    x.onerror = () => no(new Error('Connection lost'));
+    x.send(blob);
+  });
+}
+
+async function upload(file){
+  const el = document.createElement('div');
+  el.className = 'item';
+  const isVid = file.type.startsWith('video/');
+  const name = file.name || ('pasted-' + Date.now() + '.png');
+  el.innerHTML = `<div class="thumb"></div><div><div class="name">${esc(name)}</div>
+    <div class="meta">${fmt(file.size)} · <span class="st">Preparing...</span></div>
+    <div class="bar"><i></i></div><div class="out"></div></div>`;
+  list.prepend(el);
+  const th = el.querySelector('.thumb'), st = el.querySelector('.st'), bar = el.querySelector('.bar i'), out = el.querySelector('.out');
+  const url = URL.createObjectURL(file);
+  if(isVid) th.innerHTML = `<video src="${url}" muted></video>`; else th.style.backgroundImage = `url(${url})`;
+  const fail = m => { st.textContent = 'Failed'; out.innerHTML = `<div class="err">${esc(m)}</div>`; };
+
+  if(!/^(image|video)\//.test(file.type)) return fail('Only images and videos are supported.');
+  if(file.size > MAX_MB*1048576) return fail(`This file is larger than ${MAX_MB} MB.`);
+
+  try{
+    const a = await call({ action:'init', name, mime:file.type, size:file.size, origin:location.origin });
+    if(a.auth === false){ sessionStorage.removeItem('eh_key'); location.reload(); return; }
+    if(!a.ok) return fail(a.error);
+
+    st.textContent = 'Uploading...';
+    let res = null, pos = 0;
+    while(pos < file.size){
+      const blob = file.slice(pos, Math.min(pos + CHUNK, file.size));
+      for(let t = 1; ; t++){
+        try{ res = await putChunk(a.session, blob, pos, file.size, n => bar.style.width = (n/file.size*100)+'%'); break; }
+        catch(e){ if(t === 3) throw e; st.textContent = `Retrying (${t})...`; await sleep(1500*t); }
+      }
+      pos += blob.size; st.textContent = 'Uploading...';
+    }
+    if(!res || !res.id) throw new Error('Upload did not finish. Please try again.');
+
+    st.textContent = 'Creating link...';
+    const f = await call({ action:'finish', id:res.id });
+    if(!f.ok) return fail(f.error);
+    showLinks(f.file, out, st, bar);
+  }catch(e){ fail(e.message); }
+}
+
+function showLinks(f, out, st, bar){
+  bar.style.width = '100%';
+  st.innerHTML = '<span class="ok">Uploaded</span>';
+  const img = f.mime.startsWith('image/');
+  const rows = [['Direct link', f.direct], ['Download', f.download]];
+  if(img){ rows.push(['HTML', `<img src="${f.direct}" alt="">`], ['Markdown', `![](${f.direct})`], ['BBCode', `[img]${f.direct}[/img]`]); }
+  else rows.push(['Embed', `<iframe src="${f.preview}" width="640" height="360" allowfullscreen></iframe>`]);
+  out.innerHTML = '<div class="links">' + rows.map(([l,v]) =>
+    `<div class="row"><label>${l}</label><input readonly value="${esc(v)}"><button class="ghost">Copy</button></div>`).join('') + '</div>';
+  out.querySelectorAll('.row').forEach(r => r.querySelector('button').onclick = ev => {
+    navigator.clipboard.writeText(r.querySelector('input').value);
+    ev.target.textContent = 'Copied'; setTimeout(() => ev.target.textContent = 'Copy', 1200);
+  });
+  done.push(f.direct); $('#copyAll').hidden = false;
+}
+</script>
+</body>
+</html>
