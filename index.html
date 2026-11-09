@@ -1,1979 +1,559 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ElHelewa Upload Center</title>
-    <meta name="robots" content="noindex,nofollow" />
-    <meta
-      name="description"
-      content="Upload images and videos and get permanent direct links, stored on Google Drive."
-    />
-    <link rel="icon" href="favicon.png" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Sora:wght@500;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      :root {
-        --gold: #d4af37;
-        --gold2: #f3d77a;
-        --deep: #1c0f3a;
-        --mid: #d4af37;
-        --soft: #d9b64c;
-        --pale: #f8f1ff;
-        --bg: #f5eefc;
-        --card: #fff;
-        --field: #fbf8ff;
-        --ink: #1a1033;
-        --mute: #6a5f8a;
-        --line: rgba(212, 175, 55, 0.4);
-        --drop: #f8f1ff;
-        --dropH: #f0e4ff;
-        --hero1: #0d061f;
-        --hero2: #2a1558;
-        --ok: #16805f;
-        --err: #c2362f;
-        --sh: rgba(26, 16, 51, 0.2);
-      }
-      [data-theme="dark"] {
-        --bg: #0c0719;
-        --card: #170f2e;
-        --field: #110a24;
-        --ink: #f4ecff;
-        --mute: #a99fcb;
-        --line: rgba(212, 175, 55, 0.35);
-        --drop: #1d1338;
-        --dropH: #27194a;
-        --hero1: #07030f;
-        --hero2: #1f1045;
-        --deep: #3a1d78;
-        --soft: #e0bd55;
-        --sh: rgba(0, 0, 0, 0.55);
-      }
-      * {
-        box-sizing: border-box;
-      }
-      html {
-        scroll-behavior: smooth;
-      }
-      body {
-        margin: 0;
-        font-family: Inter, "IBM Plex Sans Arabic", system-ui, sans-serif;
-        color: var(--ink);
-        background: var(--bg);
-        line-height: 1.65;
-        transition:
-          background 0.35s,
-          color 0.35s;
-      }
-      :lang(ar) body,
-      :lang(ar) button,
-      :lang(ar) input {
-        font-family: "IBM Plex Sans Arabic", Inter, sans-serif;
-      }
-      h1,
-      h2,
-      .brand {
-        font-family: Sora, "IBM Plex Sans Arabic", sans-serif;
-      }
-      :lang(ar) h1,
-      :lang(ar) h2,
-      :lang(ar) .brand,
-      :lang(ar) #drop b {
-        font-family: "IBM Plex Sans Arabic", sans-serif;
-      }
-      .wrap {
-        max-width: 1040px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ElHelewa Upload Center</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Upload images and videos and get permanent direct links, stored on Google Drive.">
+<link rel="icon" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Sora:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#d4af37;--gold2:#f3d77a;--deep:#1c0f3a;--mid:#d4af37;--soft:#d9b64c;--pale:#f8f1ff;--bg:#f5eefc;--card:#fff;--field:#fbf8ff;--ink:#1a1033;--mute:#6a5f8a;--line:rgba(212,175,55,.4);--drop:#f8f1ff;--dropH:#f0e4ff;--hero1:#0d061f;--hero2:#2a1558;--ok:#16805f;--err:#c2362f;--sh:rgba(26,16,51,.2)}
+[data-theme=dark]{--bg:#0c0719;--card:#170f2e;--field:#110a24;--ink:#f4ecff;--mute:#a99fcb;--line:rgba(212,175,55,.35);--drop:#1d1338;--dropH:#27194a;--hero1:#07030f;--hero2:#1f1045;--deep:#3a1d78;--soft:#e0bd55;--sh:rgba(0,0,0,.55)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,'IBM Plex Sans Arabic',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;transition:background .35s,color .35s}
+:lang(ar) body,:lang(ar) button,:lang(ar) input{font-family:'IBM Plex Sans Arabic',Inter,sans-serif}
+h1,h2,.brand{font-family:Sora,'IBM Plex Sans Arabic',sans-serif}
+:lang(ar) h1,:lang(ar) h2,:lang(ar) .brand,:lang(ar) #drop b{font-family:'IBM Plex Sans Arabic',sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
 
-      /* ---------- keyframes ---------- */
-      @keyframes up {
-        from {
-          opacity: 0;
-          transform: translateY(26px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-      @keyframes pop {
-        from {
-          opacity: 0;
-          transform: scale(0.6);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-      @keyframes floaty {
-        0%,
-        100% {
-          transform: translateY(0) rotate(2deg);
-        }
-        50% {
-          transform: translateY(-14px) rotate(-1.5deg);
-        }
-      }
-      @keyframes drift {
-        0%,
-        100% {
-          transform: translate(0, 0) scale(1);
-        }
-        50% {
-          transform: translate(40px, -30px) scale(1.15);
-        }
-      }
-      @keyframes shine {
-        from {
-          background-position: 200% 0;
-        }
-        to {
-          background-position: -200% 0;
-        }
-      }
-      @keyframes bob {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-7px);
-        }
-      }
-      @keyframes ring {
-        0% {
-          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.55);
-        }
-        100% {
-          box-shadow: 0 0 0 18px rgba(212, 175, 55, 0);
-        }
-      }
-      @keyframes slide {
-        from {
-          opacity: 0;
-          transform: translateY(-14px) scale(0.98);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
-      }
-      @keyframes shake {
-        20%,
-        60% {
-          transform: translateX(-9px);
-        }
-        40%,
-        80% {
-          transform: translateX(9px);
-        }
-      }
-      @keyframes check {
-        from {
-          transform: scale(0) rotate(-40deg);
-        }
-        to {
-          transform: none;
-        }
-      }
+/* ---------- keyframes ---------- */
+@keyframes up{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-14px) rotate(-1.5deg)}}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.15)}}
+@keyframes shine{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(212,175,55,.55)}100%{box-shadow:0 0 0 18px rgba(212,175,55,0)}}
+@keyframes slide{from{opacity:0;transform:translateY(-14px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes shake{20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+@keyframes check{from{transform:scale(0) rotate(-40deg)}to{transform:none}}
 
-      /* ---------- header / hero ---------- */
-      .top {
-        position: relative;
-        overflow: hidden;
-        border-bottom: 3px solid var(--gold);
-        color: #fff;
-        padding-bottom: 120px;
-        background: linear-gradient(
-          120deg,
-          var(--hero1),
-          var(--hero2),
-          var(--hero1)
-        );
-        background-size: 220% 220%;
-        animation:
-          shine 0s,
-          grad 14s ease-in-out infinite;
-        transition: background 0.35s;
-      }
-      @keyframes grad {
-        0%,
-        100% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-      }
-      .blob {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(60px);
-        opacity: 0.45;
-        pointer-events: none;
-        animation: drift 12s ease-in-out infinite;
-      }
-      .b1 {
-        width: 340px;
-        height: 340px;
-        background: #5b2ea6;
-        top: -90px;
-        inset-inline-start: -60px;
-      }
-      .b2 {
-        width: 300px;
-        height: 300px;
-        background: #d4af37;
-        bottom: -120px;
-        inset-inline-end: 8%;
-        animation-delay: -5s;
-        opacity: 0.3;
-      }
-      .b3 {
-        width: 200px;
-        height: 200px;
-        background: #7a3fd1;
-        top: 30%;
-        inset-inline-end: -50px;
-        animation-delay: -9s;
-        opacity: 0.28;
-      }
-      nav,
-      .hero {
-        position: relative;
-        z-index: 1;
-      }
-      nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 0;
-        animation: up 0.6s both;
-      }
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-weight: 800;
-        font-size: 20px;
-        color: #fff;
-        text-decoration: none;
-      }
-      .brand img {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: #d9dadf;
-        border: 2px solid var(--gold);
-        transition: transform 0.3s;
-      }
-      .brand:hover img {
-        transform: rotate(-8deg) scale(1.08);
-      }
-      .right {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .pill {
-        font-size: 13px;
-        color: var(--gold2);
-        border: 1px solid rgba(212, 175, 55, 0.55);
-        border-radius: 99px;
-        padding: 5px 14px;
-      }
-      .tg {
-        display: flex;
-        gap: 8px;
-      }
-      .tg button {
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        border-radius: 12px;
-        background: rgba(255, 227, 255, 0.14);
-        border: 1px solid rgba(212, 175, 55, 0.55);
-        color: var(--gold2);
-        display: grid;
-        place-items: center;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        transition:
-          transform 0.2s,
-          background 0.2s;
-      }
-      .tg button:hover {
-        background: rgba(255, 227, 255, 0.28);
-        transform: translateY(-2px) rotate(-6deg);
-      }
-      .tg button:active {
-        transform: scale(0.9);
-      }
-      .tg svg {
-        width: 19px;
-        height: 19px;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-      .tg .moon {
-        display: none;
-      }
-      [data-theme="dark"] .tg .sun {
-        display: none;
-      }
-      [data-theme="dark"] .tg .moon {
-        display: block;
-      }
-      .hero {
-        display: grid;
-        grid-template-columns: 1.25fr 0.75fr;
-        gap: 40px;
-        align-items: center;
-        padding-top: 36px;
-      }
-      .hero h1 {
-        font-size: clamp(34px, 5.4vw, 56px);
-        line-height: 1.12;
-        margin: 0 0 16px;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        animation: up 0.8s 0.1s both;
-      }
-      .gt {
-        background: linear-gradient(
-          90deg,
-          var(--gold),
-          var(--gold2),
-          var(--gold)
-        );
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-      }
-      .hero p {
-        color: #e9dcf5;
-        font-size: 18px;
-        max-width: 46ch;
-        margin: 0 0 24px;
-        animation: up 0.8s 0.25s both;
-      }
-      .chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-      .chips span {
-        background: rgba(255, 227, 255, 0.1);
-        border: 1px solid rgba(212, 175, 55, 0.5);
-        padding: 7px 14px;
-        border-radius: 99px;
-        font-size: 14px;
-        animation: pop 0.5s both;
-        transition:
-          transform 0.2s,
-          background 0.2s;
-      }
-      .chips span:hover {
-        transform: translateY(-3px);
-        background: rgba(255, 227, 255, 0.2);
-      }
-      .chips span:nth-child(1) {
-        animation-delay: 0.45s;
-      }
-      .chips span:nth-child(2) {
-        animation-delay: 0.55s;
-      }
-      .chips span:nth-child(3) {
-        animation-delay: 0.65s;
-      }
-      .chips span:nth-child(4) {
-        animation-delay: 0.75s;
-      }
-      .logo {
-        width: 100%;
-        max-width: 330px;
-        justify-self: center;
-        border-radius: 28px;
-        border: 3px solid var(--gold);
-        box-shadow: 0 24px 60px rgba(20, 10, 50, 0.5);
-        animation: floaty 6s ease-in-out infinite;
-      }
+/* ---------- header / hero ---------- */
+.top{position:relative;overflow:hidden;border-bottom:3px solid var(--gold);color:#fff;padding-bottom:120px;background:linear-gradient(120deg,var(--hero1),var(--hero2),var(--hero1));background-size:220% 220%;animation:shine 0s,grad 14s ease-in-out infinite;transition:background .35s}
+@keyframes grad{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.blob{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45;pointer-events:none;animation:drift 12s ease-in-out infinite}
+.b1{width:340px;height:340px;background:#5b2ea6;top:-90px;inset-inline-start:-60px}
+.b2{width:300px;height:300px;background:#d4af37;bottom:-120px;inset-inline-end:8%;animation-delay:-5s;opacity:.3}
+.b3{width:200px;height:200px;background:#7a3fd1;top:30%;inset-inline-end:-50px;animation-delay:-9s;opacity:.28}
+nav,.hero{position:relative;z-index:1}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;animation:up .6s both}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;color:#fff;text-decoration:none}
+.brand img{width:44px;height:44px;border-radius:12px;background:#d9dadf;border:2px solid var(--gold);transition:transform .3s}
+.brand:hover img{transform:rotate(-8deg) scale(1.08)}
+.right{display:flex;align-items:center;gap:10px}
+.pill{font-size:13px;color:var(--gold2);border:1px solid rgba(212,175,55,.55);border-radius:99px;padding:5px 14px}
+.tg{display:flex;gap:8px}
+.tg button{width:40px;height:40px;padding:0;border-radius:12px;background:rgba(255,227,255,.14);border:1px solid rgba(212,175,55,.55);color:var(--gold2);display:grid;place-items:center;font-size:13px;font-weight:700;cursor:pointer;transition:transform .2s,background .2s}
+.tg button:hover{background:rgba(255,227,255,.28);transform:translateY(-2px) rotate(-6deg)}
+.tg button:active{transform:scale(.9)}
+.tg svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tg .moon{display:none}[data-theme=dark] .tg .sun{display:none}[data-theme=dark] .tg .moon{display:block}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center;padding-top:36px}
+.hero h1{font-size:clamp(34px,5.4vw,56px);line-height:1.12;margin:0 0 16px;font-weight:800;letter-spacing:-.02em;animation:up .8s .1s both}
+.gt{background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:#e9dcf5;font-size:18px;max-width:46ch;margin:0 0 24px;animation:up .8s .25s both}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chips span{background:rgba(255,227,255,.1);border:1px solid rgba(212,175,55,.5);padding:7px 14px;border-radius:99px;font-size:14px;animation:pop .5s both;transition:transform .2s,background .2s}
+.chips span:hover{transform:translateY(-3px);background:rgba(255,227,255,.2)}
+.chips span:nth-child(1){animation-delay:.45s}.chips span:nth-child(2){animation-delay:.55s}.chips span:nth-child(3){animation-delay:.65s}.chips span:nth-child(4){animation-delay:.75s}
+.logo{width:100%;max-width:330px;justify-self:center;border-radius:28px;border:3px solid var(--gold);box-shadow:0 24px 60px rgba(20,10,50,.5);animation:floaty 6s ease-in-out infinite}
 
-      /* ---------- uploader ---------- */
-      .card {
-        background: var(--card);
-        border: 1px solid rgba(212, 175, 55, 0.6);
-        border-radius: 24px;
-        padding: 28px;
-        margin-top: -84px;
-        box-shadow: 0 20px 50px var(--sh);
-        position: relative;
-        animation: up 0.8s 0.35s both;
-        transition: background 0.35s;
-      }
-      #drop {
-        display: block;
-        border: 2px dashed var(--soft);
-        background: var(--drop);
-        border-radius: 18px;
-        padding: 52px 20px;
-        text-align: center;
-        cursor: pointer;
-        transition:
-          background 0.2s,
-          border-color 0.2s,
-          transform 0.2s;
-      }
-      #drop:hover {
-        border-color: var(--mid);
-        background: var(--dropH);
-        transform: translateY(-2px);
-      }
-      #drop.over {
-        border-color: var(--mid);
-        background: var(--dropH);
-        transform: scale(1.02);
-        border-style: solid;
-      }
-      #drop:focus-within {
-        outline: 3px solid var(--mid);
-        outline-offset: 3px;
-      }
-      #drop b {
-        font-family: Sora;
-        font-size: 21px;
-        display: block;
-        color: var(--ink);
-      }
-      #drop span {
-        color: var(--mute);
-        font-size: 14px;
-      }
-      #drop .ico {
-        width: 56px;
-        height: 56px;
-        border-radius: 17px;
-        background: linear-gradient(135deg, var(--gold), var(--gold2));
-        color: #1c0f3a;
-        font-weight: 700;
-        display: grid;
-        place-items: center;
-        margin: 0 auto 14px;
-        font-size: 26px;
-        animation:
-          bob 2.4s ease-in-out infinite,
-          ring 2.4s ease-out infinite;
-      }
-      #drop.over .ico {
-        animation: bob 0.6s ease-in-out infinite;
-      }
-      input[type="file"] {
-        position: absolute;
-        opacity: 0;
-        pointer-events: none;
-      }
-      .tools {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 16px;
-        color: var(--mute);
-        font-size: 14px;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .item {
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 14px;
-        margin-top: 14px;
-        display: grid;
-        grid-template-columns: 76px 1fr;
-        gap: 14px;
-        animation: slide 0.45s both;
-        transition:
-          box-shadow 0.2s,
-          border-color 0.2s;
-      }
-      .item:hover {
-        box-shadow: 0 8px 24px var(--sh);
-        border-color: var(--soft);
-      }
-      .item.done {
-        border-color: var(--ok);
-      }
-      .thumb {
-        width: 76px;
-        height: 76px;
-        border-radius: 12px;
-        background: var(--drop) center/cover;
-        overflow: hidden;
-        transition: transform 0.3s;
-      }
-      .item:hover .thumb {
-        transform: scale(1.06) rotate(-2deg);
-      }
-      .thumb video {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      .name {
-        font-weight: 600;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .meta {
-        color: var(--mute);
-        font-size: 13px;
-      }
-      .bar {
-        height: 7px;
-        background: var(--drop);
-        border-radius: 9px;
-        margin-top: 8px;
-        overflow: hidden;
-      }
-      .bar i {
-        display: block;
-        height: 100%;
-        width: 0;
-        background: linear-gradient(90deg, var(--mid), var(--soft), var(--mid));
-        background-size: 200% 100%;
-        animation: shine 1.4s linear infinite;
-        transition: width 0.25s;
-        border-radius: 9px;
-      }
-      .item.done .bar i {
-        animation: none;
-        background: var(--ok);
-      }
-      .err {
-        color: var(--err);
-        font-size: 14px;
-        margin-top: 6px;
-      }
-      .ok {
-        color: var(--ok);
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-      }
-      .ok::before {
-        content: "✓";
-        display: inline-grid;
-        place-items: center;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--ok);
-        color: #fff;
-        font-size: 11px;
-        animation: check 0.4s both;
-      }
-      .links {
-        margin-top: 12px;
-        display: grid;
-        gap: 8px;
-      }
-      .row {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        animation: up 0.4s both;
-      }
-      .row:nth-child(2) {
-        animation-delay: 0.06s;
-      }
-      .row:nth-child(3) {
-        animation-delay: 0.12s;
-      }
-      .row:nth-child(4) {
-        animation-delay: 0.18s;
-      }
-      .row:nth-child(5) {
-        animation-delay: 0.24s;
-      }
-      .row label {
-        width: 84px;
-        font-size: 13px;
-        color: var(--mute);
-        flex: none;
-      }
-      .row input {
-        flex: 1;
-        min-width: 0;
-        font:
-          13px ui-monospace,
-          Menlo,
-          monospace;
-        padding: 9px 11px;
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        background: var(--field);
-        color: var(--ink);
-        direction: ltr;
-        text-align: left;
-        transition: border-color 0.2s;
-      }
-      .row input:focus {
-        outline: none;
-        border-color: var(--mid);
-      }
-      button {
-        font:
-          600 13px Inter,
-          "IBM Plex Sans Arabic";
-        padding: 8px 16px;
-        border-radius: 10px;
-        border: 0;
-        background: linear-gradient(135deg, var(--gold), var(--gold2));
-        color: #1c0f3a;
-        cursor: pointer;
-        transition:
-          filter 0.2s,
-          transform 0.15s,
-          box-shadow 0.2s;
-      }
-      button:hover {
-        filter: brightness(1.1);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px var(--sh);
-      }
-      button:active {
-        transform: scale(0.95);
-      }
-      button.ghost {
-        background: var(--drop);
-        color: var(--ink);
-        border: 1px solid var(--soft);
-      }
-      button.ghost:hover {
-        background: var(--dropH);
-        filter: none;
-        border-color: var(--gold);
-      }
-      button:focus-visible {
-        outline: 3px solid var(--mid);
-        outline-offset: 2px;
-      }
-      .tg button:focus-visible {
-        outline-color: var(--gold2);
-      }
+/* ---------- uploader ---------- */
+.card{background:var(--card);border:1px solid rgba(212,175,55,.6);border-radius:24px;padding:28px;margin-top:-84px;box-shadow:0 20px 50px var(--sh);position:relative;animation:up .8s .35s both;transition:background .35s}
+#drop{display:block;border:2px dashed var(--soft);background:var(--drop);border-radius:18px;padding:52px 20px;text-align:center;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+#drop:hover{border-color:var(--mid);background:var(--dropH);transform:translateY(-2px)}
+#drop.over{border-color:var(--mid);background:var(--dropH);transform:scale(1.02);border-style:solid}
+#drop:focus-within{outline:3px solid var(--mid);outline-offset:3px}
+#drop b{font-family:Sora;font-size:21px;display:block;color:var(--ink)}
+#drop span{color:var(--mute);font-size:14px}
+#drop .ico{width:56px;height:56px;border-radius:17px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1c0f3a;font-weight:700;display:grid;place-items:center;margin:0 auto 14px;font-size:26px;animation:bob 2.4s ease-in-out infinite,ring 2.4s ease-out infinite}
+#drop.over .ico{animation:bob .6s ease-in-out infinite}
+input[type=file]{position:absolute;opacity:0;pointer-events:none}
+.tools{display:flex;justify-content:space-between;align-items:center;margin-top:16px;color:var(--mute);font-size:14px;flex-wrap:wrap;gap:8px}
+.item{border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:14px;display:grid;grid-template-columns:76px 1fr;gap:14px;animation:slide .45s both;transition:box-shadow .2s,border-color .2s}
+.item:hover{box-shadow:0 8px 24px var(--sh);border-color:var(--soft)}
+.item.done{border-color:var(--ok)}
+.thumb{width:76px;height:76px;border-radius:12px;background:var(--drop) center/cover;overflow:hidden;transition:transform .3s}
+.item:hover .thumb{transform:scale(1.06) rotate(-2deg)}
+.thumb video{width:100%;height:100%;object-fit:cover}
+.name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{color:var(--mute);font-size:13px}
+.bar{height:7px;background:var(--drop);border-radius:9px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--mid),var(--soft),var(--mid));background-size:200% 100%;animation:shine 1.4s linear infinite;transition:width .25s;border-radius:9px}
+.item.done .bar i{animation:none;background:var(--ok)}
+.err{color:var(--err);font-size:14px;margin-top:6px}
+.ok{color:var(--ok);font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.ok::before{content:"✓";display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--ok);color:#fff;font-size:11px;animation:check .4s both}
+.links{margin-top:12px;display:grid;gap:8px}
+.row{display:flex;gap:8px;align-items:center;animation:up .4s both}
+.row:nth-child(2){animation-delay:.06s}.row:nth-child(3){animation-delay:.12s}.row:nth-child(4){animation-delay:.18s}.row:nth-child(5){animation-delay:.24s}
+.row label{width:84px;font-size:13px;color:var(--mute);flex:none}
+.row input{flex:1;min-width:0;font:13px ui-monospace,Menlo,monospace;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--ink);direction:ltr;text-align:left;transition:border-color .2s}
+.row input:focus{outline:none;border-color:var(--mid)}
+button{font:600 13px Inter,'IBM Plex Sans Arabic';padding:8px 16px;border-radius:10px;border:0;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1c0f3a;cursor:pointer;transition:filter .2s,transform .15s,box-shadow .2s}
+button:hover{filter:brightness(1.1);transform:translateY(-2px);box-shadow:0 6px 16px var(--sh)}
+button:active{transform:scale(.95)}
+button.ghost{background:var(--drop);color:var(--ink);border:1px solid var(--soft)}
+button.ghost:hover{background:var(--dropH);filter:none;border-color:var(--gold)}
+button:focus-visible{outline:3px solid var(--mid);outline-offset:2px}
+.tg button:focus-visible{outline-color:var(--gold2)}
 
-      /* ---------- browse / drive ---------- */
-      .actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 16px;
-      }
-      .actions button {
-        padding: 10px 18px;
-        font-size: 14px;
-      }
-      .ov {
-        position: fixed;
-        inset: 0;
-        background: rgba(10, 5, 30, 0.65);
-        backdrop-filter: blur(4px);
-        display: grid;
-        place-items: center;
-        z-index: 20;
-        padding: 16px;
-        animation: up 0.3s both;
-      }
-      .mbox {
-        background: var(--card);
-        border: 1px solid rgba(212, 175, 55, 0.6);
-        border-radius: 24px;
-        padding: 30px;
-        width: 100%;
-        max-width: 380px;
-        text-align: center;
-        box-shadow: 0 30px 70px rgba(10, 5, 40, 0.4);
-        position: relative;
-      }
-      .mbox.bad {
-        animation: shake 0.45s;
-      }
-      .mbox h2 {
-        margin: 0 0 4px;
-        font-size: 20px;
-        color: var(--ink);
-      }
-      .mbox p {
-        margin: 0 0 16px;
-        color: var(--mute);
-        font-size: 14.5px;
-      }
-      .mbox input {
-        width: 100%;
-        padding: 13px 14px;
-        border: 1px solid var(--soft);
-        border-radius: 12px;
-        font-size: 16px;
-        text-align: center;
-        margin-bottom: 12px;
-        background: var(--field);
-        color: var(--ink);
-      }
-      .mbox input:focus {
-        outline: none;
-        border-color: var(--mid);
-        box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.25);
-      }
-      .mbox .two {
-        display: flex;
-        gap: 10px;
-      }
-      .mbox .two button {
-        flex: 1;
-        padding: 12px;
-      }
-      #pmErr,
-      #brErr {
-        color: var(--err);
-        font-size: 14px;
-        min-height: 22px;
-        margin-top: 8px;
-      }
-      .panel {
-        background: var(--card);
-        border: 1px solid rgba(212, 175, 55, 0.6);
-        border-radius: 24px;
-        width: 100%;
-        max-width: 1000px;
-        max-height: 92vh;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 0 30px 70px rgba(10, 5, 40, 0.4);
-        overflow: hidden;
-      }
-      .phead {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
-        padding: 18px 20px;
-        border-bottom: 1px solid var(--line);
-      }
-      .phead h2 {
-        margin: 0;
-        font-size: 19px;
-        color: var(--ink);
-        flex: 1;
-        min-width: 140px;
-      }
-      .phead input {
-        flex: 2;
-        min-width: 160px;
-        padding: 9px 12px;
-        border: 1px solid var(--soft);
-        border-radius: 10px;
-        background: var(--field);
-        color: var(--ink);
-        font-size: 14px;
-        font-family: inherit;
-      }
-      .phead input:focus {
-        outline: none;
-        border-color: var(--mid);
-      }
-      .pbody {
-        overflow: auto;
-        padding: 18px 20px 22px;
-      }
-      .fgrid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 14px;
-      }
-      .fc {
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        overflow: hidden;
-        background: var(--card);
-        display: flex;
-        flex-direction: column;
-        animation: slide 0.4s both;
-        transition:
-          box-shadow 0.2s,
-          border-color 0.2s;
-      }
-      .fc:hover {
-        box-shadow: 0 8px 24px var(--sh);
-        border-color: var(--soft);
-      }
-      .fth {
-        height: 130px;
-        background: var(--drop);
-        display: grid;
-        place-items: center;
-        font-size: 34px;
-        color: var(--mute);
-        position: relative;
-        overflow: hidden;
-      }
-      .fth img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        position: absolute;
-        inset: 0;
-      }
-      .fth .vb {
-        position: absolute;
-        inset-inline-end: 8px;
-        bottom: 8px;
-        background: rgba(0, 0, 0, 0.6);
-        color: #fff;
-        font-size: 11px;
-        padding: 2px 8px;
-        border-radius: 99px;
-      }
-      .fi {
-        padding: 10px 12px 12px;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        flex: 1;
-      }
-      .fi .name {
-        font-size: 14px;
-      }
-      .fi .meta {
-        font-size: 12px;
-      }
-      .fb {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        align-items: center;
-        align-content: flex-start;
-        margin-top: auto;
-        padding-top: 6px;
-      }
-      .fa {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        flex: 0 0 auto;
-        height: 30px;
-        min-height: 0;
-        padding: 0 12px;
-        font-size: 12px;
-        font-weight: 600;
-        line-height: 1;
-        white-space: nowrap;
-        border-radius: 99px;
-        border: 1px solid transparent;
-        position: relative;
-        overflow: hidden;
-        cursor: pointer;
-        transition:
-          transform 0.2s,
-          box-shadow 0.25s,
-          background 0.25s,
-          color 0.25s,
-          border-color 0.25s;
-      }
-      .fa svg {
-        width: 14px;
-        height: 14px;
-        flex: none;
-        fill: none;
-        stroke: currentColor;
-        stroke-width: 2.2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        transition: transform 0.25s;
-      }
-      .fa::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          110deg,
-          transparent 30%,
-          rgba(255, 255, 255, 0.55) 50%,
-          transparent 70%
-        );
-        transform: translateX(-130%);
-        transition: transform 0.6s;
-        pointer-events: none;
-      }
-      .fa:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 14px var(--sh);
-      }
-      .fa:hover::after {
-        transform: translateX(130%);
-      }
-      .fa:hover svg {
-        transform: scale(1.18) rotate(-8deg);
-      }
-      .fa.dl:hover svg {
-        transform: translateY(2px);
-      }
-      .fa.ex:hover svg {
-        transform: translate(2px, -2px);
-      }
-      .fa:active {
-        transform: scale(0.94);
-        box-shadow: none;
-      }
-      .fa.ghost {
-        background: var(--drop);
-        color: var(--ink);
-        border-color: var(--soft);
-      }
-      .fa.ghost:hover {
-        background: linear-gradient(135deg, var(--gold), var(--gold2));
-        color: #1c0f3a;
-        border-color: transparent;
-        filter: none;
-      }
-      .fa.done {
-        background: var(--ok) !important;
-        color: #fff !important;
-        border-color: transparent !important;
-        animation: pop 0.3s both;
-      }
-      .fgrid {
-        align-items: start;
-      }
-      .fth img {
-        transition: transform 0.45s;
-      }
-      .fc:hover .fth img {
-        transform: scale(1.08);
-      }
-      .pmsg {
-        text-align: center;
-        color: var(--mute);
-        padding: 30px 0;
-      }
-      #more {
-        display: block;
-        margin: 18px auto 0;
-        padding: 10px 24px;
-      }
+/* ---------- browse / drive ---------- */
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.actions button{padding:10px 18px;font-size:14px}
+.ov{position:fixed;inset:0;background:rgba(10,5,30,.65);backdrop-filter:blur(4px);display:grid;place-items:center;z-index:20;padding:16px;animation:up .3s both}
+.mbox{background:var(--card);border:1px solid rgba(212,175,55,.6);border-radius:24px;padding:30px;width:100%;max-width:380px;text-align:center;box-shadow:0 30px 70px rgba(10,5,40,.4);position:relative}
+.mbox.bad{animation:shake .45s}
+.mbox h2{margin:0 0 4px;font-size:20px;color:var(--ink)}
+.mbox p{margin:0 0 16px;color:var(--mute);font-size:14.5px}
+.mbox input{width:100%;padding:13px 14px;border:1px solid var(--soft);border-radius:12px;font-size:16px;text-align:center;margin-bottom:12px;background:var(--field);color:var(--ink)}
+.mbox input:focus{outline:none;border-color:var(--mid);box-shadow:0 0 0 4px rgba(212,175,55,.25)}
+.mbox .two{display:flex;gap:10px}.mbox .two button{flex:1;padding:12px}
+#pmErr,#brErr{color:var(--err);font-size:14px;min-height:22px;margin-top:8px}
+.panel{background:var(--card);border:1px solid rgba(212,175,55,.6);border-radius:24px;width:100%;max-width:1000px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(10,5,40,.4);overflow:hidden}
+.phead{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:18px 20px;border-bottom:1px solid var(--line)}
+.phead h2{margin:0;font-size:19px;color:var(--ink);flex:1;min-width:140px}
+.phead input{flex:2;min-width:160px;padding:9px 12px;border:1px solid var(--soft);border-radius:10px;background:var(--field);color:var(--ink);font-size:14px;font-family:inherit}
+.phead input:focus{outline:none;border-color:var(--mid)}
+.pbody{overflow:auto;padding:18px 20px 22px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.fc{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card);display:flex;flex-direction:column;animation:slide .4s both;transition:box-shadow .2s,border-color .2s}
+.fc:hover{box-shadow:0 8px 24px var(--sh);border-color:var(--soft)}
+.fth{height:190px;cursor:zoom-in;background:var(--drop);display:grid;place-items:center;font-size:34px;color:var(--mute);position:relative;overflow:hidden}
+.fth img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0}
+.fth .vb{position:absolute;inset-inline-end:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:2px 8px;border-radius:99px}
+.fi{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.fi .name{font-size:14px}
+.fi .meta{font-size:12px}
+.fb{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:auto;padding-top:8px}
+.fa{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:0;height:32px;min-height:0;padding:0 8px;font-size:12px;font-weight:600;line-height:1;border-radius:10px;border:1px solid var(--soft);background:var(--drop);color:var(--ink);position:relative;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .25s,background .25s,color .25s,border-color .25s}
+.fa .lb{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fa svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
+.fa::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.5) 50%,transparent 70%);transform:translateX(-130%);transition:transform .6s;pointer-events:none}
+.fa.pri{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1c0f3a;border-color:transparent}
+.fa:hover{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1c0f3a;border-color:transparent;transform:translateY(-2px);box-shadow:0 6px 14px var(--sh);filter:none}
+.fa:hover::after{transform:translateX(130%)}
+.fa:hover svg{transform:scale(1.18) rotate(-6deg)}
+.fa.dl:hover svg{transform:translateY(2px)}
+.fa.ex:hover svg{transform:translate(2px,-2px)}
+.fa:active{transform:scale(.95);box-shadow:none}
+.fa.done{background:var(--ok)!important;color:#fff!important;border-color:transparent!important;animation:pop .3s both}
+.fgrid{align-items:start}
+.fth img{transition:transform .45s}
+.fc:hover .fth img{transform:scale(1.04)}
+.lbx{z-index:30;background:rgba(5,2,15,.9);flex-direction:column;gap:12px}
+.lbx:not(.hidden){display:flex!important;align-items:center;justify-content:center}
+.lbbody img{display:block;max-width:94vw;max-height:80vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.6);background:var(--card)}
+.lbbody iframe{width:min(92vw,960px);height:min(78vh,540px);border:0;border-radius:12px;background:#000}
+.lbcap{color:#e9dcf5;font-size:14px;max-width:90vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lbclose{position:absolute;top:16px;inset-inline-end:16px;width:40px;height:40px;padding:0;border-radius:50%;font-size:18px;display:grid;place-items:center}
+.pmsg{text-align:center;color:var(--mute);padding:30px 0}
+#more{display:block;margin:18px auto 0;padding:10px 24px}
 
-      /* ---------- features / footer ---------- */
-      .feat {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 18px;
-        margin: 56px 0;
-      }
-      .feat div {
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-        padding: 22px;
-        transition:
-          transform 0.25s,
-          box-shadow 0.25s,
-          border-color 0.25s,
-          background 0.35s;
-      }
-      .feat div:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 16px 36px var(--sh);
-        border-color: var(--soft);
-      }
-      .feat h2 {
-        font-size: 17px;
-        margin: 0 0 6px;
-        color: var(--ink);
-      }
-      .feat p {
-        margin: 0;
-        color: var(--mute);
-        font-size: 14.5px;
-      }
-      .rv {
-        opacity: 0;
-        transform: translateY(30px);
-        transition:
-          opacity 0.7s,
-          transform 0.7s;
-      }
-      .rv.in {
-        opacity: 1;
-        transform: none;
-      }
-      .feat .rv:nth-child(2) {
-        transition-delay: 0.12s;
-      }
-      .feat .rv:nth-child(3) {
-        transition-delay: 0.24s;
-      }
-      footer {
-        border-top: 1px solid var(--line);
-        padding: 26px 0 40px;
-        color: var(--mute);
-        font-size: 14px;
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
+/* ---------- features / footer ---------- */
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin:56px 0}
+.feat div{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;transition:transform .25s,box-shadow .25s,border-color .25s,background .35s}
+.feat div:hover{transform:translateY(-6px);box-shadow:0 16px 36px var(--sh);border-color:var(--soft)}
+.feat h2{font-size:17px;margin:0 0 6px;color:var(--ink)}
+.feat p{margin:0;color:var(--mute);font-size:14.5px}
+.rv{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s}
+.rv.in{opacity:1;transform:none}
+.feat .rv:nth-child(2){transition-delay:.12s}.feat .rv:nth-child(3){transition-delay:.24s}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--mute);font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
 
-      /* ---------- lock screen ---------- */
-      #lock {
-        position: fixed;
-        inset: 0;
-        background: linear-gradient(135deg, var(--hero1), var(--hero2));
-        display: grid;
-        place-items: center;
-        z-index: 10;
-        padding: 20px;
-        transition:
-          opacity 0.45s,
-          transform 0.45s;
-      }
-      #lock.out {
-        opacity: 0;
-        transform: scale(1.06);
-        pointer-events: none;
-      }
-      #lock .tg {
-        position: absolute;
-        top: 18px;
-        inset-inline-end: 18px;
-      }
-      #lock form {
-        background: var(--card);
-        border: 1px solid rgba(212, 175, 55, 0.6);
-        border-radius: 24px;
-        padding: 34px;
-        width: 100%;
-        max-width: 380px;
-        text-align: center;
-        animation: up 0.7s both;
-        box-shadow: 0 30px 70px rgba(10, 5, 40, 0.4);
-        position: relative;
-      }
-      #lock form.bad {
-        animation: shake 0.45s;
-      }
-      #lock img {
-        width: 96px;
-        border-radius: 22px;
-        border: 2px solid var(--gold);
-        margin-bottom: 14px;
-        animation: floaty 5s ease-in-out infinite;
-      }
-      #lock h2 {
-        margin: 0 0 4px;
-        font-size: 22px;
-        color: var(--ink);
-      }
-      #lock p {
-        margin: 0 0 18px;
-        color: var(--mute);
-        font-size: 14.5px;
-      }
-      #lock input {
-        width: 100%;
-        padding: 13px 14px;
-        border: 1px solid var(--soft);
-        border-radius: 12px;
-        font-size: 16px;
-        text-align: center;
-        margin-bottom: 12px;
-        background: var(--field);
-        color: var(--ink);
-        transition:
-          border-color 0.2s,
-          box-shadow 0.2s;
-      }
-      #lock input:focus {
-        outline: none;
-        border-color: var(--mid);
-        box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.25);
-      }
-      #lock button {
-        width: 100%;
-        padding: 13px;
-        font-size: 15px;
-      }
-      #lockErr {
-        color: var(--err);
-        font-size: 14px;
-        min-height: 22px;
-        margin-top: 8px;
-      }
-      .hidden {
-        display: none !important;
-      }
-      @media (max-width: 760px) {
-        .hero {
-          grid-template-columns: 1fr;
-        }
-        .logo {
-          max-width: 220px;
-          order: -1;
-          justify-self: start;
-        }
-        .top {
-          padding-bottom: 110px;
-        }
-        .pill {
-          display: none;
-        }
-      }
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before {
-          animation: none !important;
-          transition: none !important;
-        }
-        .rv {
-          opacity: 1;
-          transform: none;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="lock">
-      <div class="tg">
-        <button type="button" class="themeBtn" aria-label="Toggle theme">
-          <svg class="sun" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="4" />
-            <path
-              d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
-            /></svg
-          ><svg class="moon" viewBox="0 0 24 24">
-            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-          </svg></button
-        ><button
-          type="button"
-          class="langBtn"
-          aria-label="Change language"
-        ></button>
-      </div>
-      <form id="lockForm">
-        <img
-          src="logo.png"
-          onerror="this.style.visibility = 'hidden'"
-          alt="ElHelewa logo"
-        />
-        <h2 data-i18n="lockTitle"></h2>
-        <p data-i18n="lockSub"></p>
-        <input
-          type="password"
-          id="pw"
-          data-i18n-ph="pwPh"
-          autocomplete="current-password"
-          required
-        />
-        <button type="submit" id="lockBtn" data-i18n="unlock"></button>
-        <div id="lockErr" role="alert"></div>
-      </form>
+/* ---------- lock screen ---------- */
+#lock{position:fixed;inset:0;background:linear-gradient(135deg,var(--hero1),var(--hero2));display:grid;place-items:center;z-index:10;padding:20px;transition:opacity .45s,transform .45s}
+#lock.out{opacity:0;transform:scale(1.06);pointer-events:none}
+#lock .tg{position:absolute;top:18px;inset-inline-end:18px}
+#lock form{background:var(--card);border:1px solid rgba(212,175,55,.6);border-radius:24px;padding:34px;width:100%;max-width:380px;text-align:center;animation:up .7s both;box-shadow:0 30px 70px rgba(10,5,40,.4);position:relative}
+#lock form.bad{animation:shake .45s}
+#lock img{width:96px;border-radius:22px;border:2px solid var(--gold);margin-bottom:14px;animation:floaty 5s ease-in-out infinite}
+#lock h2{margin:0 0 4px;font-size:22px;color:var(--ink)}
+#lock p{margin:0 0 18px;color:var(--mute);font-size:14.5px}
+#lock input{width:100%;padding:13px 14px;border:1px solid var(--soft);border-radius:12px;font-size:16px;text-align:center;margin-bottom:12px;background:var(--field);color:var(--ink);transition:border-color .2s,box-shadow .2s}
+#lock input:focus{outline:none;border-color:var(--mid);box-shadow:0 0 0 4px rgba(212,175,55,.25)}
+#lock button{width:100%;padding:13px;font-size:15px}
+#lockErr{color:var(--err);font-size:14px;min-height:22px;margin-top:8px}
+.hidden{display:none!important}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.logo{max-width:220px;order:-1;justify-self:start}.top{padding-bottom:110px}.pill{display:none}}
+@media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <div class="tg"><button type="button" class="themeBtn" aria-label="Toggle theme"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button><button type="button" class="langBtn" aria-label="Change language"></button></div>
+  <form id="lockForm">
+    <img src="logo.png" onerror="this.style.visibility='hidden'" alt="ElHelewa logo">
+    <h2 data-i18n="lockTitle"></h2>
+    <p data-i18n="lockSub"></p>
+    <input type="password" id="pw" data-i18n-ph="pwPh" autocomplete="current-password" required>
+    <button type="submit" id="lockBtn" data-i18n="unlock"></button>
+    <div id="lockErr" role="alert"></div>
+  </form>
+</div>
+
+<div id="pm" class="ov hidden">
+  <form id="pmForm" class="mbox">
+    <h2 id="pmTitle"></h2>
+    <p data-i18n="pmSub"></p>
+    <input type="password" id="pmPw" data-i18n-ph="pwPh" autocomplete="off" required>
+    <div class="two"><button type="button" class="ghost" id="pmCancel" data-i18n="cancel"></button><button type="submit" id="pmBtn" data-i18n="open"></button></div>
+    <div id="pmErr" role="alert"></div>
+  </form>
+</div>
+
+<div id="br" class="ov hidden">
+  <div class="panel">
+    <div class="phead">
+      <h2 data-i18n="filesTitle"></h2>
+      <input type="search" id="brQ" data-i18n-ph="search">
+      <button type="button" class="ghost" id="brClose" data-i18n="close"></button>
     </div>
-
-    <div id="pm" class="ov hidden">
-      <form id="pmForm" class="mbox">
-        <h2 id="pmTitle"></h2>
-        <p data-i18n="pmSub"></p>
-        <input
-          type="password"
-          id="pmPw"
-          data-i18n-ph="pwPh"
-          autocomplete="off"
-          required
-        />
-        <div class="two">
-          <button
-            type="button"
-            class="ghost"
-            id="pmCancel"
-            data-i18n="cancel"
-          ></button
-          ><button type="submit" id="pmBtn" data-i18n="open"></button>
-        </div>
-        <div id="pmErr" role="alert"></div>
-      </form>
+    <div class="pbody">
+      <div id="brErr" role="alert"></div>
+      <div class="fgrid" id="fgrid"></div>
+      <div class="pmsg" id="brMsg"></div>
+      <button type="button" id="more" class="ghost hidden" data-i18n="more"></button>
     </div>
+  </div>
+</div>
 
-    <div id="br" class="ov hidden">
-      <div class="panel">
-        <div class="phead">
-          <h2 data-i18n="filesTitle"></h2>
-          <input type="search" id="brQ" data-i18n-ph="search" />
-          <button
-            type="button"
-            class="ghost"
-            id="brClose"
-            data-i18n="close"
-          ></button>
-        </div>
-        <div class="pbody">
-          <div id="brErr" role="alert"></div>
-          <div class="fgrid" id="fgrid"></div>
-          <div class="pmsg" id="brMsg"></div>
-          <button
-            type="button"
-            id="more"
-            class="ghost hidden"
-            data-i18n="more"
-          ></button>
-        </div>
+<div id="lb" class="ov lbx hidden">
+  <button type="button" class="lbclose" id="lbClose" aria-label="Close">✕</button>
+  <div class="lbbody" id="lbBody"></div>
+  <div class="lbcap" id="lbCap" dir="auto"></div>
+</div>
+
+<header class="top">
+  <i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#"><img src="logo.png" onerror="this.style.visibility='hidden'" alt="">ElHelewa</a>
+      <div class="right">
+        <span class="pill" data-i18n="pill"></span>
+        <div class="tg"><button type="button" class="themeBtn" aria-label="Toggle theme"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button><button type="button" class="langBtn" aria-label="Change language"></button></div>
       </div>
+    </nav>
+    <div class="hero">
+      <div>
+        <h1 data-i18n="h1"></h1>
+        <p data-i18n="heroP"></p>
+        <div class="chips"><span data-i18n="c1"></span><span data-i18n="c2"></span><span data-i18n="c3"></span><span data-i18n="c4"></span></div>
+      </div>
+      <img class="logo" src="logo.png" onerror="this.style.visibility='hidden'" alt="Yasser ElHelewa logo">
     </div>
+  </div>
+</header>
 
-    <header class="top">
-      <i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
-      <div class="wrap">
-        <nav>
-          <a class="brand" href="#"
-            ><img
-              src="logo.png"
-              onerror="this.style.visibility = 'hidden'"
-              alt=""
-            />ElHelewa</a
-          >
-          <div class="right">
-            <span class="pill" data-i18n="pill"></span>
-            <div class="tg">
-              <button type="button" class="themeBtn" aria-label="Toggle theme">
-                <svg class="sun" viewBox="0 0 24 24">
-                  <circle cx="12" cy="12" r="4" />
-                  <path
-                    d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
-                  /></svg
-                ><svg class="moon" viewBox="0 0 24 24">
-                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-                </svg></button
-              ><button
-                type="button"
-                class="langBtn"
-                aria-label="Change language"
-              ></button>
-            </div>
-          </div>
-        </nav>
-        <div class="hero">
-          <div>
-            <h1 data-i18n="h1"></h1>
-            <p data-i18n="heroP"></p>
-            <div class="chips">
-              <span data-i18n="c1"></span><span data-i18n="c2"></span
-              ><span data-i18n="c3"></span><span data-i18n="c4"></span>
-            </div>
-          </div>
-          <img
-            class="logo"
-            src="logo.png"
-            onerror="this.style.visibility = 'hidden'"
-            alt="Yasser ElHelewa logo"
-          />
-        </div>
-      </div>
-    </header>
+<main class="wrap">
+  <section class="card" id="upload">
+    <label id="drop" tabindex="0">
+      <input type="file" id="file" accept="image/*,video/*" multiple>
+      <div class="ico" aria-hidden="true">↑</div>
+      <b data-i18n="dropT"></b>
+      <span data-i18n="dropS"></span>
+    </label>
+    <div class="actions">
+      <button type="button" id="btnBrowse" data-i18n="browse"></button>
+      <button type="button" id="btnDrive" class="ghost" data-i18n="openDrive"></button>
+    </div>
+    <div class="tools"><span data-i18n="maxT"></span><button id="copyAll" class="ghost" hidden data-i18n="copyAll"></button></div>
+    <div id="list"></div>
+  </section>
 
-    <main class="wrap">
-      <section class="card" id="upload">
-        <label id="drop" tabindex="0">
-          <input type="file" id="file" accept="image/*,video/*" multiple />
-          <div class="ico" aria-hidden="true">↑</div>
-          <b data-i18n="dropT"></b>
-          <span data-i18n="dropS"></span>
-        </label>
-        <div class="actions">
-          <button type="button" id="btnBrowse" data-i18n="browse"></button>
-          <button
-            type="button"
-            id="btnDrive"
-            class="ghost"
-            data-i18n="openDrive"
-          ></button>
-        </div>
-        <div class="tools">
-          <span data-i18n="maxT"></span
-          ><button
-            id="copyAll"
-            class="ghost"
-            hidden
-            data-i18n="copyAll"
-          ></button>
-        </div>
-        <div id="list"></div>
-      </section>
+  <section class="feat">
+    <div class="rv"><h2 data-i18n="f1t"></h2><p data-i18n="f1p"></p></div>
+    <div class="rv"><h2 data-i18n="f2t"></h2><p data-i18n="f2p"></p></div>
+    <div class="rv"><h2 data-i18n="f3t"></h2><p data-i18n="f3p"></p></div>
+  </section>
 
-      <section class="feat">
-        <div class="rv">
-          <h2 data-i18n="f1t"></h2>
-          <p data-i18n="f1p"></p>
-        </div>
-        <div class="rv">
-          <h2 data-i18n="f2t"></h2>
-          <p data-i18n="f2p"></p>
-        </div>
-        <div class="rv">
-          <h2 data-i18n="f3t"></h2>
-          <p data-i18n="f3p"></p>
-        </div>
-      </section>
+  <footer><span>© <span id="yr"></span> <span data-i18n="owner"></span></span><span data-i18n="foot"></span></footer>
+</main>
 
-      <footer>
-        <span>© <span id="yr"></span> <span data-i18n="owner"></span></span
-        ><span data-i18n="foot"></span>
-      </footer>
-    </main>
+<script>
+// ===== Settings =====
+const API_URL  = 'https://script.google.com/macros/s/AKfycbzEMCLRJoH4mTW3dn8EXfyXu7zwvnrYppB3H7cZQa9QrXYz-5MlBjLzELMYhqEYOKC57A/exec';   // Apps Script Web App URL
+const MAX_MB  = 100;
+const CHUNK   = 8 * 1024 * 1024;                  // multiple of 256 KB
+// ====================
 
-    <script>
-      // ===== Settings =====
-      const API_URL =
-        "https://script.google.com/macros/s/AKfycbzEMCLRJoH4mTW3dn8EXfyXu7zwvnrYppB3H7cZQa9QrXYz-5MlBjLzELMYhqEYOKC57A/exec"; // Apps Script Web App URL
-      const MAX_MB = 100;
-      const CHUNK = 8 * 1024 * 1024; // multiple of 256 KB
-      // ====================
+const I18N = {
+ en:{dir:'ltr',title:'ElHelewa Upload Center',btn:'عربي',
+  lockTitle:'ElHelewa Upload Center',lockSub:'Enter the password to start uploading.',pwPh:'Password',unlock:'Unlock',checking:'Checking...',
+  wrong:'Wrong password. Try again.',noServer:'Could not reach the server. Check API_URL.',
+  pill:'Image & video hosting',h1:'ElHelewa<br><span class="gt">Upload Center</span>',
+  heroP:'Upload once, link forever. Drop in your images and videos and get permanent direct links for code, posts, or anywhere else.',
+  c1:'Permanent links',c2:'Up to 100 MB',c3:'Images & video',c4:'Stored on Google Drive',
+  dropT:'Drop files here or click to browse',dropS:'You can also paste an image with Ctrl+V',maxT:'Max file size: 100 MB',copyAll:'Copy all direct links',
+  f1t:'Direct links',f1p:'Use the link in &lt;img&gt; tags, apps, APIs, forums, or chat.',
+  f2t:'Large uploads, no stress',f2p:'Big files are sent in chunks and retried automatically if the connection drops.',
+  f3t:'Always available',f3p:'Everything lives in Drive, so your links keep working with no expiry date.',
+  owner:'Yasser ElHelewa',foot:'ElHelewa Upload Center',
+  prep:'Preparing...',upl:'Uploading...',retry:'Retrying',mk:'Creating link...',failed:'Failed',okT:'Uploaded',
+  onlyMedia:'Only images and videos are supported.',big:'This file is larger than 100 MB.',unfinished:'Upload did not finish. Please try again.',
+  lost:'Connection lost',direct:'Direct link',dl:'Download',embed:'Embed',copy:'Copy',copied:'Copied',
+  browse:'Browse uploaded files',openDrive:'Open Google Drive',pmBrowse:'Browse uploaded files',pmDrive:'Open Google Drive',pmSub:'Enter the password to continue.',
+  cancel:'Cancel',open:'Open',filesTitle:'Uploaded files',search:'Search by file name...',empty:'No files found.',more:'Load more',close:'Close',loading:'Loading...',
+  cDirect:'Direct link',cDl:'Download link',cPrev:'Preview',cPage:'Open in Drive',video:'Video'},
+ ar:{dir:'rtl',title:'مركز الحليوة لرفع الملفات',btn:'EN',
+  lockTitle:'مركز الحليوة لرفع الملفات',lockSub:'اكتب كلمة السر عشان تبدأ الرفع.',pwPh:'كلمة السر',unlock:'فتح',checking:'جاري التحقق...',
+  wrong:'كلمة السر غلط. جرّب تاني.',noServer:'تعذر الوصول للسيرفر. راجع API_URL.',
+  pill:'استضافة صور وفيديو',h1:'مركز الحليوة<br><span class="gt">لرفع الملفات</span>',
+  heroP:'ارفع مرة واحدة والرابط يفضل للأبد. ارفع صورك وفيديوهاتك وخد روابط مباشرة دائمة تستخدمها في الكود أو المنشورات أو أي مكان.',
+  c1:'روابط دائمة',c2:'لحد 100 ميجا',c3:'صور وفيديو',c4:'مخزنة على Google Drive',
+  dropT:'اسحب الملفات هنا أو اضغط للاختيار',dropS:'وتقدر كمان تلصق صورة بـ Ctrl+V',maxT:'أقصى حجم للملف: 100 ميجا',copyAll:'انسخ كل الروابط المباشرة',
+  f1t:'روابط مباشرة',f1p:'استخدم الرابط في وسوم &lt;img&gt; أو التطبيقات أو الـ API أو المنتديات أو الشات.',
+  f2t:'رفع الملفات الكبيرة بدون قلق',f2p:'الملفات الكبيرة بتتبعت على أجزاء وبتتعاد تلقائياً لو النت قطع.',
+  f3t:'متاحة دايماً',f3p:'كل حاجة على Drive فالروابط تفضل شغالة من غير تاريخ انتهاء.',
+  owner:'ياسر الحليوة',foot:'مركز الحليوة لرفع الملفات',
+  prep:'جاري التجهيز...',upl:'جاري الرفع...',retry:'إعادة المحاولة',mk:'جاري إنشاء الرابط...',failed:'فشل',okT:'تم الرفع',
+  onlyMedia:'مسموح بالصور والفيديو فقط.',big:'الملف أكبر من 100 ميجا.',unfinished:'الرفع ما اكتملش. جرّب تاني.',
+  lost:'انقطع الاتصال',direct:'رابط مباشر',dl:'تحميل',embed:'تضمين',copy:'نسخ',copied:'تم النسخ',
+  browse:'استعراض الملفات المرفوعة',openDrive:'فتح Google Drive',pmBrowse:'استعراض الملفات المرفوعة',pmDrive:'فتح Google Drive',pmSub:'اكتب كلمة السر عشان تكمل.',
+  cancel:'إلغاء',open:'فتح',filesTitle:'الملفات المرفوعة',search:'ابحث باسم الملف...',empty:'مفيش ملفات.',more:'عرض المزيد',close:'إغلاق',loading:'جاري التحميل...',
+  cDirect:'رابط مباشر',cDl:'رابط التحميل',cPrev:'معاينة',cPage:'فتح في درايف',video:'فيديو'}
+};
+const store = {get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+let lang  = store.get('eh_lang')  || ((navigator.language||'').startsWith('ar') ? 'ar' : 'en');
+let theme = store.get('eh_theme') || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+const t = k => I18N[lang][k];
 
-      const I18N = {
-        en: {
-          dir: "ltr",
-          title: "ElHelewa Upload Center",
-          btn: "عربي",
-          lockTitle: "ElHelewa Upload Center",
-          lockSub: "Enter the password to start uploading.",
-          pwPh: "Password",
-          unlock: "Unlock",
-          checking: "Checking...",
-          wrong: "Wrong password. Try again.",
-          noServer: "Could not reach the server. Check API_URL.",
-          pill: "Image & video hosting",
-          h1: 'ElHelewa<br><span class="gt">Upload Center</span>',
-          heroP:
-            "Upload once, link forever. Drop in your images and videos and get permanent direct links for code, posts, or anywhere else.",
-          c1: "Permanent links",
-          c2: "Up to 100 MB",
-          c3: "Images & video",
-          c4: "Stored on Google Drive",
-          dropT: "Drop files here or click to browse",
-          dropS: "You can also paste an image with Ctrl+V",
-          maxT: "Max file size: 100 MB",
-          copyAll: "Copy all direct links",
-          f1t: "Direct links",
-          f1p: "Use the link in &lt;img&gt; tags, apps, APIs, forums, or chat.",
-          f2t: "Large uploads, no stress",
-          f2p: "Big files are sent in chunks and retried automatically if the connection drops.",
-          f3t: "Always available",
-          f3p: "Everything lives in Drive, so your links keep working with no expiry date.",
-          owner: "Yasser ElHelewa",
-          foot: "ElHelewa Upload Center",
-          prep: "Preparing...",
-          upl: "Uploading...",
-          retry: "Retrying",
-          mk: "Creating link...",
-          failed: "Failed",
-          okT: "Uploaded",
-          onlyMedia: "Only images and videos are supported.",
-          big: "This file is larger than 100 MB.",
-          unfinished: "Upload did not finish. Please try again.",
-          lost: "Connection lost",
-          direct: "Direct link",
-          dl: "Download",
-          embed: "Embed",
-          copy: "Copy",
-          copied: "Copied",
-          browse: "Browse uploaded files",
-          openDrive: "Open Google Drive",
-          pmBrowse: "Browse uploaded files",
-          pmDrive: "Open Google Drive",
-          pmSub: "Enter the password to continue.",
-          cancel: "Cancel",
-          open: "Open",
-          filesTitle: "Uploaded files",
-          search: "Search by file name...",
-          empty: "No files found.",
-          more: "Load more",
-          close: "Close",
-          loading: "Loading...",
-          cDirect: "Direct link",
-          cDl: "Download link",
-          cPage: "Open",
-          video: "Video",
-        },
-        ar: {
-          dir: "rtl",
-          title: "مركز الحليوة لرفع الملفات",
-          btn: "EN",
-          lockTitle: "مركز الحليوة لرفع الملفات",
-          lockSub: "اكتب كلمة السر عشان تبدأ الرفع.",
-          pwPh: "كلمة السر",
-          unlock: "فتح",
-          checking: "جاري التحقق...",
-          wrong: "كلمة السر غلط. جرّب تاني.",
-          noServer: "تعذر الوصول للسيرفر. راجع API_URL.",
-          pill: "استضافة صور وفيديو",
-          h1: 'مركز الحليوة<br><span class="gt">لرفع الملفات</span>',
-          heroP:
-            "ارفع مرة واحدة والرابط يفضل للأبد. ارفع صورك وفيديوهاتك وخد روابط مباشرة دائمة تستخدمها في الكود أو المنشورات أو أي مكان.",
-          c1: "روابط دائمة",
-          c2: "لحد 100 ميجا",
-          c3: "صور وفيديو",
-          c4: "مخزنة على Google Drive",
-          dropT: "اسحب الملفات هنا أو اضغط للاختيار",
-          dropS: "وتقدر كمان تلصق صورة بـ Ctrl+V",
-          maxT: "أقصى حجم للملف: 100 ميجا",
-          copyAll: "انسخ كل الروابط المباشرة",
-          f1t: "روابط مباشرة",
-          f1p: "استخدم الرابط في وسوم &lt;img&gt; أو التطبيقات أو الـ API أو المنتديات أو الشات.",
-          f2t: "رفع الملفات الكبيرة بدون قلق",
-          f2p: "الملفات الكبيرة بتتبعت على أجزاء وبتتعاد تلقائياً لو النت قطع.",
-          f3t: "متاحة دايماً",
-          f3p: "كل حاجة على Drive فالروابط تفضل شغالة من غير تاريخ انتهاء.",
-          owner: "ياسر الحليوة",
-          foot: "مركز الحليوة لرفع الملفات",
-          prep: "جاري التجهيز...",
-          upl: "جاري الرفع...",
-          retry: "إعادة المحاولة",
-          mk: "جاري إنشاء الرابط...",
-          failed: "فشل",
-          okT: "تم الرفع",
-          onlyMedia: "مسموح بالصور والفيديو فقط.",
-          big: "الملف أكبر من 100 ميجا.",
-          unfinished: "الرفع ما اكتملش. جرّب تاني.",
-          lost: "انقطع الاتصال",
-          direct: "رابط مباشر",
-          dl: "تحميل",
-          embed: "تضمين",
-          copy: "نسخ",
-          copied: "تم النسخ",
-          browse: "استعراض الملفات المرفوعة",
-          openDrive: "فتح Google Drive",
-          pmBrowse: "استعراض الملفات المرفوعة",
-          pmDrive: "فتح Google Drive",
-          pmSub: "اكتب كلمة السر عشان تكمل.",
-          cancel: "إلغاء",
-          open: "فتح",
-          filesTitle: "الملفات المرفوعة",
-          search: "ابحث باسم الملف...",
-          empty: "مفيش ملفات.",
-          more: "عرض المزيد",
-          close: "إغلاق",
-          loading: "جاري التحميل...",
-          cDirect: "رابط مباشر",
-          cDl: "رابط التحميل",
-          cPage: "فتح",
-          video: "فيديو",
-        },
-      };
-      const store = {
-        get: (k) => {
-          try {
-            return localStorage.getItem(k);
-          } catch (e) {
-            return null;
-          }
-        },
-        set: (k, v) => {
-          try {
-            localStorage.setItem(k, v);
-          } catch (e) {}
-        },
-      };
-      let lang =
-        store.get("eh_lang") ||
-        ((navigator.language || "").startsWith("ar") ? "ar" : "en");
-      let theme =
-        store.get("eh_theme") ||
-        (matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light");
-      const t = (k) => I18N[lang][k];
+const $ = s => document.querySelector(s), list = $('#list'), done = [];
+let KEY = '';
+try{ KEY = sessionStorage.getItem('eh_key') || ''; }catch(e){}
 
-      const $ = (s) => document.querySelector(s),
-        list = $("#list"),
-        done = [];
-      let KEY = "";
-      try {
-        KEY = sessionStorage.getItem("eh_key") || "";
-      } catch (e) {}
+function applyTheme(){ document.documentElement.dataset.theme = theme; store.set('eh_theme', theme); }
+function applyLang(){
+  const d = I18N[lang], h = document.documentElement;
+  h.lang = lang; h.dir = d.dir; document.title = d.title; store.set('eh_lang', lang);
+  document.querySelectorAll('[data-i18n]').forEach(e => e.innerHTML = d[e.dataset.i18n]);
+  document.querySelectorAll('[data-i18n-ph]').forEach(e => e.placeholder = d[e.dataset.i18nPh]);
+  document.querySelectorAll('.langBtn').forEach(b => b.textContent = d.btn);
+}
+document.querySelectorAll('.themeBtn').forEach(b => b.onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; applyTheme(); });
+document.querySelectorAll('.langBtn').forEach(b => b.onclick = () => { lang = lang === 'ar' ? 'en' : 'ar'; applyLang(); });
+applyTheme(); applyLang();
+$('#yr').textContent = new Date().getFullYear();
 
-      function applyTheme() {
-        document.documentElement.dataset.theme = theme;
-        store.set("eh_theme", theme);
-      }
-      function applyLang() {
-        const d = I18N[lang],
-          h = document.documentElement;
-        h.lang = lang;
-        h.dir = d.dir;
-        document.title = d.title;
-        store.set("eh_lang", lang);
-        document
-          .querySelectorAll("[data-i18n]")
-          .forEach((e) => (e.innerHTML = d[e.dataset.i18n]));
-        document
-          .querySelectorAll("[data-i18n-ph]")
-          .forEach((e) => (e.placeholder = d[e.dataset.i18nPh]));
-        document
-          .querySelectorAll(".langBtn")
-          .forEach((b) => (b.textContent = d.btn));
-      }
-      document.querySelectorAll(".themeBtn").forEach(
-        (b) =>
-          (b.onclick = () => {
-            theme = theme === "dark" ? "light" : "dark";
-            applyTheme();
-          }),
-      );
-      document.querySelectorAll(".langBtn").forEach(
-        (b) =>
-          (b.onclick = () => {
-            lang = lang === "ar" ? "en" : "ar";
-            applyLang();
-          }),
-      );
-      applyTheme();
-      applyLang();
-      $("#yr").textContent = new Date().getFullYear();
+/* scroll reveal */
+const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.2}) : null;
+document.querySelectorAll('.rv').forEach(e => io ? io.observe(e) : e.classList.add('in'));
 
-      /* scroll reveal */
-      const io =
-        "IntersectionObserver" in window
-          ? new IntersectionObserver(
-              (es) =>
-                es.forEach((e) => {
-                  if (e.isIntersecting) {
-                    e.target.classList.add("in");
-                    io.unobserve(e.target);
-                  }
-                }),
-              { threshold: 0.2 },
-            )
-          : null;
-      document
-        .querySelectorAll(".rv")
-        .forEach((e) => (io ? io.observe(e) : e.classList.add("in")));
+const call = async (body, key = KEY) => {
+  const r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({...body, key}) });
+  return r.json();
+};
+const fmt = b => b > 1048576 ? (b/1048576).toFixed(1)+' MB' : Math.max(1,Math.round(b/1024))+' KB';
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-      const call = async (body, key = KEY) => {
-        const r = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ ...body, key }),
-        });
-        return r.json();
-      };
-      const fmt = (b) =>
-        b > 1048576
-          ? (b / 1048576).toFixed(1) + " MB"
-          : Math.max(1, Math.round(b / 1024)) + " KB";
-      const esc = (s) =>
-        s.replace(
-          /[&<>"]/g,
-          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
-        );
-      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+/* ---- lock screen ---- */
+async function tryUnlock(pw, silent){
+  const btn = $('#lockBtn'); btn.disabled = true; btn.textContent = t('checking');
+  KEY = pw;
+  const fail = m => { if(silent) return; $('#lockErr').textContent = m; const f=$('#lockForm'); f.classList.remove('bad'); void f.offsetWidth; f.classList.add('bad'); };
+  try{
+    const r = await call({ action:'auth' });
+    if(r.ok){ try{sessionStorage.setItem('eh_key', pw)}catch(e){} $('#lock').classList.add('out'); setTimeout(()=>$('#lock').classList.add('hidden'),450); return; }
+    KEY = ''; try{sessionStorage.removeItem('eh_key')}catch(e){}
+    fail(t('wrong'));
+  }catch(e){ fail(t('noServer')); }
+  btn.disabled = false; btn.textContent = t('unlock');
+}
+$('#lockForm').addEventListener('submit', e => { e.preventDefault(); $('#lockErr').textContent=''; tryUnlock($('#pw').value.trim()); });
+if(KEY) tryUnlock(KEY, true);
 
-      /* ---- lock screen ---- */
-      async function tryUnlock(pw, silent) {
-        const btn = $("#lockBtn");
-        btn.disabled = true;
-        btn.textContent = t("checking");
-        KEY = pw;
-        const fail = (m) => {
-          if (silent) return;
-          $("#lockErr").textContent = m;
-          const f = $("#lockForm");
-          f.classList.remove("bad");
-          void f.offsetWidth;
-          f.classList.add("bad");
-        };
-        try {
-          const r = await call({ action: "auth" });
-          if (r.ok) {
-            try {
-              sessionStorage.setItem("eh_key", pw);
-            } catch (e) {}
-            $("#lock").classList.add("out");
-            setTimeout(() => $("#lock").classList.add("hidden"), 450);
-            return;
-          }
-          KEY = "";
-          try {
-            sessionStorage.removeItem("eh_key");
-          } catch (e) {}
-          fail(t("wrong"));
-        } catch (e) {
-          fail(t("noServer"));
-        }
-        btn.disabled = false;
-        btn.textContent = t("unlock");
-      }
-      $("#lockForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        $("#lockErr").textContent = "";
-        tryUnlock($("#pw").value.trim());
-      });
-      if (KEY) tryUnlock(KEY, true);
+/* ---- browse uploaded files / open Drive (password asked every time) ---- */
+let PM = '', BRKEY = '', BRQ = '', BRNEXT = '', BRBUSY = false, brTimer = 0;
+const show = (el, on) => el.classList.toggle('hidden', !on);
+const shake = (box, msgEl, m) => { msgEl.textContent = m; box.classList.remove('bad'); void box.offsetWidth; box.classList.add('bad'); };
 
-      /* ---- browse uploaded files / open Drive (password asked every time) ---- */
-      let PM = "",
-        BRKEY = "",
-        BRQ = "",
-        BRNEXT = "",
-        BRBUSY = false,
-        brTimer = 0;
-      const show = (el, on) => el.classList.toggle("hidden", !on);
-      const shake = (box, msgEl, m) => {
-        msgEl.textContent = m;
-        box.classList.remove("bad");
-        void box.offsetWidth;
-        box.classList.add("bad");
-      };
+function openPm(mode){
+  PM = mode;
+  $('#pmTitle').textContent = t(mode === 'drive' ? 'pmDrive' : 'pmBrowse');
+  $('#pmPw').value = ''; $('#pmErr').textContent = '';
+  show($('#pm'), true); setTimeout(() => $('#pmPw').focus(), 50);
+}
+const closePm = () => show($('#pm'), false);
+$('#btnBrowse').onclick = () => openPm('browse');
+$('#btnDrive').onclick  = () => openPm('drive');
+$('#pmCancel').onclick  = closePm;
+$('#pm').addEventListener('mousedown', e => { if(e.target.id === 'pm') closePm(); });
 
-      function openPm(mode) {
-        PM = mode;
-        $("#pmTitle").textContent = t(
-          mode === "drive" ? "pmDrive" : "pmBrowse",
-        );
-        $("#pmPw").value = "";
-        $("#pmErr").textContent = "";
-        show($("#pm"), true);
-        setTimeout(() => $("#pmPw").focus(), 50);
-      }
-      const closePm = () => show($("#pm"), false);
-      $("#btnBrowse").onclick = () => openPm("browse");
-      $("#btnDrive").onclick = () => openPm("drive");
-      $("#pmCancel").onclick = closePm;
-      $("#pm").addEventListener("mousedown", (e) => {
-        if (e.target.id === "pm") closePm();
-      });
+$('#pmForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const pw = $('#pmPw').value.trim(), btn = $('#pmBtn'), mode = PM;
+  if(!pw) return;
+  // open the tab right now (inside the click) so the browser doesn't block it
+  const w = mode === 'drive' ? window.open('', '_blank') : null;
+  btn.disabled = true; $('#pmErr').textContent = '';
+  try{
+    const r = await call(mode === 'drive' ? { action:'driveurl' } : { action:'list', q:'', pageToken:'' }, pw);
+    if(!r.ok){ if(w) w.close(); shake($('#pmForm'), $('#pmErr'), r.auth === false ? t('wrong') : (r.error || t('noServer'))); }
+    else if(mode === 'drive'){ closePm(); if(w){ w.location.href = r.url; } else window.open(r.url, '_blank'); }
+    else { closePm(); BRKEY = pw; BRQ = ''; $('#brQ').value = ''; $('#fgrid').innerHTML = ''; show($('#br'), true); renderFiles(r, true); }
+  }catch(err){ if(w) w.close(); shake($('#pmForm'), $('#pmErr'), t('noServer')); }
+  btn.disabled = false;
+});
 
-      $("#pmForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const pw = $("#pmPw").value.trim(),
-          btn = $("#pmBtn"),
-          mode = PM;
-        if (!pw) return;
-        // open the tab right now (inside the click) so the browser doesn't block it
-        const w = mode === "drive" ? window.open("", "_blank") : null;
-        btn.disabled = true;
-        $("#pmErr").textContent = "";
-        try {
-          const r = await call(
-            mode === "drive"
-              ? { action: "driveurl" }
-              : { action: "list", q: "", pageToken: "" },
-            pw,
-          );
-          if (!r.ok) {
-            if (w) w.close();
-            shake(
-              $("#pmForm"),
-              $("#pmErr"),
-              r.auth === false ? t("wrong") : r.error || t("noServer"),
-            );
-          } else if (mode === "drive") {
-            closePm();
-            if (w) {
-              w.location.href = r.url;
-            } else window.open(r.url, "_blank");
-          } else {
-            closePm();
-            BRKEY = pw;
-            BRQ = "";
-            $("#brQ").value = "";
-            $("#fgrid").innerHTML = "";
-            show($("#br"), true);
-            renderFiles(r, true);
-          }
-        } catch (err) {
-          if (w) w.close();
-          shake($("#pmForm"), $("#pmErr"), t("noServer"));
-        }
-        btn.disabled = false;
-      });
+function closeBr(){ show($('#br'), false); BRKEY = ''; $('#fgrid').innerHTML = ''; $('#brErr').textContent = ''; }
+$('#brClose').onclick = closeBr;
+$('#br').addEventListener('mousedown', e => { if(e.target.id === 'br') closeBr(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ if(!$('#lb').classList.contains('hidden')) return closeLb(); closePm(); closeBr(); } });
 
-      function closeBr() {
-        show($("#br"), false);
-        BRKEY = "";
-        $("#fgrid").innerHTML = "";
-        $("#brErr").textContent = "";
-      }
-      $("#brClose").onclick = closeBr;
-      $("#br").addEventListener("mousedown", (e) => {
-        if (e.target.id === "br") closeBr();
-      });
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          closePm();
-          closeBr();
-        }
-      });
+const linksOf = f => ({
+  direct: f.mimeType.startsWith('image/') ? 'https://lh3.googleusercontent.com/d/' + f.id : 'https://drive.google.com/uc?export=view&id=' + f.id,
+  download: 'https://drive.google.com/uc?export=download&id=' + f.id,
+  page: 'https://drive.google.com/file/d/' + f.id + '/view',
+  preview: 'https://drive.google.com/file/d/' + f.id + '/preview'
+});
+function openLb(f){
+  const L = linksOf(f), body = $('#lbBody');
+  if(f.mimeType.startsWith('video/')) body.innerHTML = `<iframe src="${L.preview}" allow="autoplay" allowfullscreen></iframe>`;
+  else {
+    body.innerHTML = `<img alt="" src="https://lh3.googleusercontent.com/d/${f.id}=w1600">`;
+    body.querySelector('img').onerror = ev => { ev.target.onerror = null; ev.target.src = `https://drive.google.com/thumbnail?id=${f.id}&sz=w1600`; };
+  }
+  $('#lbCap').textContent = f.name; show($('#lb'), true);
+}
+function closeLb(){ show($('#lb'), false); $('#lbBody').innerHTML = ''; }
+$('#lbClose').onclick = closeLb;
+$('#lb').addEventListener('mousedown', e => { if(e.target.id === 'lb' || e.target.id === 'lbBody') closeLb(); });
+const fmtDate = s => { try{ return new Date(s).toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-GB', {dateStyle:'medium', timeStyle:'short'}); }catch(e){ return ''; } };
+const flash = (btn, txt) => {
+  const b = btn.closest('button'), lb = b.querySelector('.lb'); if(!b.dataset.o) b.dataset.o = lb.textContent;
+  lb.textContent = txt; b.classList.add('done');
+  clearTimeout(b._t); b._t = setTimeout(() => { lb.textContent = b.dataset.o; b.classList.remove('done'); }, 1300);
+};
 
-      const linksOf = (f) => ({
-        direct: f.mimeType.startsWith("image/")
-          ? "https://lh3.googleusercontent.com/d/" + f.id
-          : "https://drive.google.com/uc?export=view&id=" + f.id,
-        download: "https://drive.google.com/uc?export=download&id=" + f.id,
-        page: "https://drive.google.com/file/d/" + f.id + "/view",
-      });
-      const fmtDate = (s) => {
-        try {
-          return new Date(s).toLocaleString(lang === "ar" ? "ar-EG" : "en-GB", {
-            dateStyle: "medium",
-            timeStyle: "short",
-          });
-        } catch (e) {
-          return "";
-        }
-      };
-      const flash = (btn, txt) => {
-        const b = btn.closest("button"),
-          lb = b.querySelector(".lb");
-        if (!b.dataset.o) b.dataset.o = lb.textContent;
-        lb.textContent = txt;
-        b.classList.add("done");
-        clearTimeout(b._t);
-        b._t = setTimeout(() => {
-          lb.textContent = b.dataset.o;
-          b.classList.remove("done");
-        }, 1300);
-      };
-
-      function renderFiles(r, reset) {
-        const grid = $("#fgrid");
-        if (reset) grid.innerHTML = "";
-        (r.files || []).forEach((f, idx) => {
-          const L = linksOf(f),
-            vid = f.mimeType.startsWith("video/");
-          const c = document.createElement("div");
-          c.className = "fc";
-          c.innerHTML = `<div class="fth"><span>${vid ? "▶" : "🖼"}</span><img alt="" loading="lazy" src="https://drive.google.com/thumbnail?id=${f.id}&sz=w400">${vid ? `<span class="vb">${t("video")}</span>` : ""}</div>
+function renderFiles(r, reset){
+  const grid = $('#fgrid');
+  if(reset) grid.innerHTML = '';
+  (r.files || []).forEach((f, idx) => {
+    const L = linksOf(f), vid = f.mimeType.startsWith('video/');
+    const c = document.createElement('div'); c.className = 'fc';
+    c.innerHTML = `<div class="fth"><span>${vid ? '▶' : '🖼'}</span><img alt="" loading="lazy" src="https://drive.google.com/thumbnail?id=${f.id}&sz=w600">${vid ? `<span class="vb">${t('video')}</span>` : ''}</div>
       <div class="fi"><div class="name" dir="auto" title="${esc(f.name)}">${esc(f.name)}</div>
-      <div class="meta">${f.size ? fmt(+f.size) + " · " : ""}${fmtDate(f.createdTime)}</div>
+      <div class="meta">${f.size ? fmt(+f.size) + ' · ' : ''}${fmtDate(f.createdTime)}</div>
       <div class="fb">
-        <button type="button" class="fa b1"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span class="lb">${t("cDirect")}</span></button>
-        <button type="button" class="fa ghost dl b2"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span class="lb">${t("cDl")}</span></button>
-        <button type="button" class="fa ghost ex b3"><svg viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg><span class="lb">${t("cPage")}</span></button></div></div>`;
-          c.style.animationDelay = Math.min(idx, 12) * 40 + "ms";
-          c.querySelector("img").onerror = (ev) => ev.target.remove();
-          c.querySelector(".b1").onclick = (ev) => {
-            navigator.clipboard.writeText(L.direct);
-            flash(ev.target, t("copied"));
-          };
-          c.querySelector(".b2").onclick = (ev) => {
-            navigator.clipboard.writeText(L.download);
-            flash(ev.target, t("copied"));
-          };
-          c.querySelector(".b3").onclick = () => window.open(L.page, "_blank");
-          grid.appendChild(c);
-        });
-        BRNEXT = r.next || "";
-        show($("#more"), !!BRNEXT);
-        $("#brMsg").textContent = grid.children.length ? "" : t("empty");
-      }
+        <button type="button" class="fa pri b1"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span class="lb">${t('cDirect')}</span></button>
+        <button type="button" class="fa b2"><svg viewBox="0 0 24 24"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg><span class="lb">${t('cPrev')}</span></button>
+        <button type="button" class="fa ex b3"><svg viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg><span class="lb">${t('cPage')}</span></button>
+        <button type="button" class="fa dl b4"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span class="lb">${t('cDl')}</span></button></div></div>`;
+    c.style.animationDelay = Math.min(idx, 12) * 40 + 'ms';
+    c.querySelector('img').onerror = ev => ev.target.remove();
+    c.querySelector('.b1').onclick = ev => { navigator.clipboard.writeText(L.direct); flash(ev.target, t('copied')); };
+    c.querySelector('.b2').onclick = () => openLb(f);
+    c.querySelector('.b3').onclick = () => window.open(L.page, '_blank');
+    c.querySelector('.b4').onclick = ev => { navigator.clipboard.writeText(L.download); flash(ev.target, t('copied')); };
+    c.querySelector('.fth').onclick = () => openLb(f);
+    grid.appendChild(c);
+  });
+  BRNEXT = r.next || '';
+  show($('#more'), !!BRNEXT);
+  $('#brMsg').textContent = grid.children.length ? '' : t('empty');
+}
 
-      async function loadFiles(reset) {
-        if (BRBUSY || !BRKEY) return;
-        BRBUSY = true;
-        $("#brErr").textContent = "";
-        $("#brMsg").textContent = t("loading");
-        try {
-          const r = await call(
-            { action: "list", q: BRQ, pageToken: reset ? "" : BRNEXT },
-            BRKEY,
-          );
-          if (!r.ok) {
-            $("#brMsg").textContent = "";
-            $("#brErr").textContent = r.error || t("noServer");
-          } else renderFiles(r, reset);
-        } catch (e) {
-          $("#brMsg").textContent = "";
-          $("#brErr").textContent = t("noServer");
-        }
-        BRBUSY = false;
-      }
-      $("#more").onclick = () => loadFiles(false);
-      $("#brQ").addEventListener("input", (e) => {
-        clearTimeout(brTimer);
-        brTimer = setTimeout(() => {
-          BRQ = e.target.value.trim();
-          loadFiles(true);
-        }, 400);
-      });
+async function loadFiles(reset){
+  if(BRBUSY || !BRKEY) return;
+  BRBUSY = true; $('#brErr').textContent = ''; $('#brMsg').textContent = t('loading');
+  try{
+    const r = await call({ action:'list', q:BRQ, pageToken: reset ? '' : BRNEXT }, BRKEY);
+    if(!r.ok){ $('#brMsg').textContent = ''; $('#brErr').textContent = r.error || t('noServer'); }
+    else renderFiles(r, reset);
+  }catch(e){ $('#brMsg').textContent = ''; $('#brErr').textContent = t('noServer'); }
+  BRBUSY = false;
+}
+$('#more').onclick = () => loadFiles(false);
+$('#brQ').addEventListener('input', e => { clearTimeout(brTimer); brTimer = setTimeout(() => { BRQ = e.target.value.trim(); loadFiles(true); }, 400); });
 
-      /* ---- drop / paste ---- */
-      const drop = $("#drop");
-      ["dragover", "dragenter"].forEach((e) =>
-        drop.addEventListener(e, (ev) => {
-          ev.preventDefault();
-          drop.classList.add("over");
-        }),
-      );
-      ["dragleave", "drop"].forEach((e) =>
-        drop.addEventListener(e, (ev) => {
-          ev.preventDefault();
-          drop.classList.remove("over");
-        }),
-      );
-      drop.addEventListener("drop", (e) => handle(e.dataTransfer.files));
-      $("#file").addEventListener("change", (e) => {
-        handle(e.target.files);
-        e.target.value = "";
-      });
-      document.addEventListener("paste", (e) =>
-        handle([...e.clipboardData.files]),
-      );
-      $("#copyAll").onclick = () =>
-        navigator.clipboard.writeText(done.join("\n"));
-      const handle = (files) => [...files].forEach(upload);
+/* ---- drop / paste ---- */
+const drop = $('#drop');
+['dragover','dragenter'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.add('over'); }));
+['dragleave','drop'].forEach(e => drop.addEventListener(e, ev => { ev.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => handle(e.dataTransfer.files));
+$('#file').addEventListener('change', e => { handle(e.target.files); e.target.value = ''; });
+document.addEventListener('paste', e => handle([...e.clipboardData.files]));
+$('#copyAll').onclick = () => navigator.clipboard.writeText(done.join('\n'));
+const handle = files => [...files].forEach(upload);
 
-      /* ---- chunked upload to the Drive resumable session ---- */
-      function putChunk(session, blob, start, total, onProgress) {
-        return new Promise((ok, no) => {
-          const x = new XMLHttpRequest();
-          x.open("PUT", session);
-          x.setRequestHeader(
-            "Content-Range",
-            `bytes ${start}-${start + blob.size - 1}/${total}`,
-          );
-          x.upload.onprogress = (e) => onProgress(start + e.loaded);
-          x.onload = () => {
-            if (x.status === 308) return ok(null);
-            if (x.status === 200 || x.status === 201)
-              return ok(JSON.parse(x.responseText));
-            no(new Error("Upload error " + x.status));
-          };
-          x.onerror = () => no(new Error(t("lost")));
-          x.send(blob);
-        });
-      }
+/* ---- chunked upload to the Drive resumable session ---- */
+function putChunk(session, blob, start, total, onProgress){
+  return new Promise((ok, no) => {
+    const x = new XMLHttpRequest();
+    x.open('PUT', session);
+    x.setRequestHeader('Content-Range', `bytes ${start}-${start+blob.size-1}/${total}`);
+    x.upload.onprogress = e => onProgress(start + e.loaded);
+    x.onload = () => {
+      if(x.status === 308) return ok(null);
+      if(x.status === 200 || x.status === 201) return ok(JSON.parse(x.responseText));
+      no(new Error('Upload error ' + x.status));
+    };
+    x.onerror = () => no(new Error(t('lost')));
+    x.send(blob);
+  });
+}
 
-      async function upload(file) {
-        const el = document.createElement("div");
-        el.className = "item";
-        const isVid = file.type.startsWith("video/");
-        const name = file.name || "pasted-" + Date.now() + ".png";
-        el.innerHTML = `<div class="thumb"></div><div><div class="name" dir="auto">${esc(name)}</div>
-    <div class="meta">${fmt(file.size)} · <span class="st">${t("prep")}</span></div>
+async function upload(file){
+  const el = document.createElement('div');
+  el.className = 'item';
+  const isVid = file.type.startsWith('video/');
+  const name = file.name || ('pasted-' + Date.now() + '.png');
+  el.innerHTML = `<div class="thumb"></div><div><div class="name" dir="auto">${esc(name)}</div>
+    <div class="meta">${fmt(file.size)} · <span class="st">${t('prep')}</span></div>
     <div class="bar"><i></i></div><div class="out"></div></div>`;
-        list.prepend(el);
-        const th = el.querySelector(".thumb"),
-          st = el.querySelector(".st"),
-          bar = el.querySelector(".bar i"),
-          out = el.querySelector(".out");
-        const url = URL.createObjectURL(file);
-        if (isVid) th.innerHTML = `<video src="${url}" muted></video>`;
-        else th.style.backgroundImage = `url(${url})`;
-        const fail = (m) => {
-          st.textContent = t("failed");
-          out.innerHTML = `<div class="err">${esc(m)}</div>`;
-        };
+  list.prepend(el);
+  const th = el.querySelector('.thumb'), st = el.querySelector('.st'), bar = el.querySelector('.bar i'), out = el.querySelector('.out');
+  const url = URL.createObjectURL(file);
+  if(isVid) th.innerHTML = `<video src="${url}" muted></video>`; else th.style.backgroundImage = `url(${url})`;
+  const fail = m => { st.textContent = t('failed'); out.innerHTML = `<div class="err">${esc(m)}</div>`; };
 
-        if (!/^(image|video)\//.test(file.type)) return fail(t("onlyMedia"));
-        if (file.size > MAX_MB * 1048576) return fail(t("big"));
+  if(!/^(image|video)\//.test(file.type)) return fail(t('onlyMedia'));
+  if(file.size > MAX_MB*1048576) return fail(t('big'));
 
-        try {
-          const a = await call({
-            action: "init",
-            name,
-            mime: file.type,
-            size: file.size,
-            origin: location.origin,
-          });
-          if (a.auth === false) {
-            try {
-              sessionStorage.removeItem("eh_key");
-            } catch (e) {}
-            location.reload();
-            return;
-          }
-          if (!a.ok) return fail(a.error);
+  try{
+    const a = await call({ action:'init', name, mime:file.type, size:file.size, origin:location.origin });
+    if(a.auth === false){ try{sessionStorage.removeItem('eh_key')}catch(e){} location.reload(); return; }
+    if(!a.ok) return fail(a.error);
 
-          st.textContent = t("upl");
-          let res = null,
-            pos = 0;
-          while (pos < file.size) {
-            const blob = file.slice(pos, Math.min(pos + CHUNK, file.size));
-            for (let n = 1; ; n++) {
-              try {
-                res = await putChunk(
-                  a.session,
-                  blob,
-                  pos,
-                  file.size,
-                  (v) => (bar.style.width = (v / file.size) * 100 + "%"),
-                );
-                break;
-              } catch (e) {
-                if (n === 3) throw e;
-                st.textContent = `${t("retry")} (${n})...`;
-                await sleep(1500 * n);
-              }
-            }
-            pos += blob.size;
-            st.textContent = t("upl");
-          }
-          if (!res || !res.id) throw new Error(t("unfinished"));
-
-          st.textContent = t("mk");
-          const f = await call({ action: "finish", id: res.id });
-          if (!f.ok) return fail(f.error);
-          showLinks(f.file, el, out, st, bar);
-        } catch (e) {
-          fail(e.message);
-        }
+    st.textContent = t('upl');
+    let res = null, pos = 0;
+    while(pos < file.size){
+      const blob = file.slice(pos, Math.min(pos + CHUNK, file.size));
+      for(let n = 1; ; n++){
+        try{ res = await putChunk(a.session, blob, pos, file.size, v => bar.style.width = (v/file.size*100)+'%'); break; }
+        catch(e){ if(n === 3) throw e; st.textContent = `${t('retry')} (${n})...`; await sleep(1500*n); }
       }
+      pos += blob.size; st.textContent = t('upl');
+    }
+    if(!res || !res.id) throw new Error(t('unfinished'));
 
-      function showLinks(f, el, out, st, bar) {
-        bar.style.width = "100%";
-        el.classList.add("done");
-        st.innerHTML = `<span class="ok">${t("okT")}</span>`;
-        const img = f.mime.startsWith("image/");
-        const rows = [
-          [t("direct"), f.direct],
-          [t("dl"), f.download],
-        ];
-        if (img) {
-          rows.push(
-            ["HTML", `<img src="${f.direct}" alt="">`],
-            ["Markdown", `![](${f.direct})`],
-            ["BBCode", `[img]${f.direct}[/img]`],
-          );
-        } else
-          rows.push([
-            t("embed"),
-            `<iframe src="${f.preview}" width="640" height="360" allowfullscreen></iframe>`,
-          ]);
-        out.innerHTML =
-          '<div class="links">' +
-          rows
-            .map(
-              ([l, v]) =>
-                `<div class="row"><label>${l}</label><input readonly dir="ltr" value="${esc(v)}"><button class="ghost">${t("copy")}</button></div>`,
-            )
-            .join("") +
-          "</div>";
-        out.querySelectorAll(".row").forEach(
-          (r) =>
-            (r.querySelector("button").onclick = (ev) => {
-              navigator.clipboard.writeText(r.querySelector("input").value);
-              ev.target.textContent = t("copied");
-              setTimeout(() => (ev.target.textContent = t("copy")), 1200);
-            }),
-        );
-        done.push(f.direct);
-        $("#copyAll").hidden = false;
-      }
-    </script>
-  </body>
+    st.textContent = t('mk');
+    const f = await call({ action:'finish', id:res.id });
+    if(!f.ok) return fail(f.error);
+    showLinks(f.file, el, out, st, bar);
+  }catch(e){ fail(e.message); }
+}
+
+function showLinks(f, el, out, st, bar){
+  bar.style.width = '100%'; el.classList.add('done');
+  st.innerHTML = `<span class="ok">${t('okT')}</span>`;
+  const img = f.mime.startsWith('image/');
+  const rows = [[t('direct'), f.direct], [t('dl'), f.download]];
+  if(img){ rows.push(['HTML', `<img src="${f.direct}" alt="">`], ['Markdown', `![](${f.direct})`], ['BBCode', `[img]${f.direct}[/img]`]); }
+  else rows.push([t('embed'), `<iframe src="${f.preview}" width="640" height="360" allowfullscreen></iframe>`]);
+  out.innerHTML = '<div class="links">' + rows.map(([l,v]) =>
+    `<div class="row"><label>${l}</label><input readonly dir="ltr" value="${esc(v)}"><button class="ghost">${t('copy')}</button></div>`).join('') + '</div>';
+  out.querySelectorAll('.row').forEach(r => r.querySelector('button').onclick = ev => {
+    navigator.clipboard.writeText(r.querySelector('input').value);
+    ev.target.textContent = t('copied'); setTimeout(() => ev.target.textContent = t('copy'), 1200);
+  });
+  done.push(f.direct); $('#copyAll').hidden = false;
+}
+</script>
+</body>
 </html>
