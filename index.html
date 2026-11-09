@@ -858,15 +858,108 @@
       }
       .fb {
         display: flex;
-        gap: 6px;
         flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+        align-content: flex-start;
         margin-top: auto;
+        padding-top: 6px;
       }
-      .fb button {
-        padding: 6px 10px;
+      .fa {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex: 0 0 auto;
+        height: 30px;
+        min-height: 0;
+        padding: 0 12px;
         font-size: 12px;
-        flex: 1;
+        font-weight: 600;
+        line-height: 1;
         white-space: nowrap;
+        border-radius: 99px;
+        border: 1px solid transparent;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.25s,
+          background 0.25s,
+          color 0.25s,
+          border-color 0.25s;
+      }
+      .fa svg {
+        width: 14px;
+        height: 14px;
+        flex: none;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: transform 0.25s;
+      }
+      .fa::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          110deg,
+          transparent 30%,
+          rgba(255, 255, 255, 0.55) 50%,
+          transparent 70%
+        );
+        transform: translateX(-130%);
+        transition: transform 0.6s;
+        pointer-events: none;
+      }
+      .fa:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px var(--sh);
+      }
+      .fa:hover::after {
+        transform: translateX(130%);
+      }
+      .fa:hover svg {
+        transform: scale(1.18) rotate(-8deg);
+      }
+      .fa.dl:hover svg {
+        transform: translateY(2px);
+      }
+      .fa.ex:hover svg {
+        transform: translate(2px, -2px);
+      }
+      .fa:active {
+        transform: scale(0.94);
+        box-shadow: none;
+      }
+      .fa.ghost {
+        background: var(--drop);
+        color: var(--ink);
+        border-color: var(--soft);
+      }
+      .fa.ghost:hover {
+        background: linear-gradient(135deg, var(--gold), var(--gold2));
+        color: #1c0f3a;
+        border-color: transparent;
+        filter: none;
+      }
+      .fa.done {
+        background: var(--ok) !important;
+        color: #fff !important;
+        border-color: transparent !important;
+        animation: pop 0.3s both;
+      }
+      .fgrid {
+        align-items: start;
+      }
+      .fth img {
+        transition: transform 0.45s;
+      }
+      .fc:hover .fth img {
+        transform: scale(1.08);
       }
       .pmsg {
         text-align: center;
@@ -1644,16 +1737,22 @@
         }
       };
       const flash = (btn, txt) => {
-        const o = btn.dataset.o || btn.textContent;
-        btn.dataset.o = o;
-        btn.textContent = txt;
-        setTimeout(() => (btn.textContent = o), 1200);
+        const b = btn.closest("button"),
+          lb = b.querySelector(".lb");
+        if (!b.dataset.o) b.dataset.o = lb.textContent;
+        lb.textContent = txt;
+        b.classList.add("done");
+        clearTimeout(b._t);
+        b._t = setTimeout(() => {
+          lb.textContent = b.dataset.o;
+          b.classList.remove("done");
+        }, 1300);
       };
 
       function renderFiles(r, reset) {
         const grid = $("#fgrid");
         if (reset) grid.innerHTML = "";
-        (r.files || []).forEach((f) => {
+        (r.files || []).forEach((f, idx) => {
           const L = linksOf(f),
             vid = f.mimeType.startsWith("video/");
           const c = document.createElement("div");
@@ -1661,7 +1760,11 @@
           c.innerHTML = `<div class="fth"><span>${vid ? "▶" : "🖼"}</span><img alt="" loading="lazy" src="https://drive.google.com/thumbnail?id=${f.id}&sz=w400">${vid ? `<span class="vb">${t("video")}</span>` : ""}</div>
       <div class="fi"><div class="name" dir="auto" title="${esc(f.name)}">${esc(f.name)}</div>
       <div class="meta">${f.size ? fmt(+f.size) + " · " : ""}${fmtDate(f.createdTime)}</div>
-      <div class="fb"><button class="b1">${t("cDirect")}</button><button class="ghost b2">${t("cDl")}</button><button class="ghost b3">${t("cPage")}</button></div></div>`;
+      <div class="fb">
+        <button type="button" class="fa b1"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg><span class="lb">${t("cDirect")}</span></button>
+        <button type="button" class="fa ghost dl b2"><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span class="lb">${t("cDl")}</span></button>
+        <button type="button" class="fa ghost ex b3"><svg viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></svg><span class="lb">${t("cPage")}</span></button></div></div>`;
+          c.style.animationDelay = Math.min(idx, 12) * 40 + "ms";
           c.querySelector("img").onerror = (ev) => ev.target.remove();
           c.querySelector(".b1").onclick = (ev) => {
             navigator.clipboard.writeText(L.direct);
